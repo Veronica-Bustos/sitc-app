@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -29,7 +30,12 @@ class RegistrationController extends Controller
 
         $validated['password'] = Hash::make($validated['password']);
 
-        event(new Registered(($user = User::create($validated))));
+        $user = User::create($validated);
+
+        // Asignar rol INACTIVO por defecto a nuevos usuarios
+        $user->assignRole(RoleEnum::INACTIVO->value);
+
+        event(new Registered($user));
 
         Auth::login($user);
 
