@@ -19,7 +19,8 @@
                 @csrf
                 <!-- Email Input -->
                 <div class="mb-4">
-                    <x-forms.input name="email" type="email" label="Email" placeholder="your@email.com" />
+                    <x-forms.input name="email" type="email" label="{{ __('Email') }}"
+                        placeholder="your@email.com" />
                 </div>
 
                 <!-- Send Reset Link Button -->

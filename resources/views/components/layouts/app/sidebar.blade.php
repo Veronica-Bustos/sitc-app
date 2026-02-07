@@ -7,25 +7,25 @@
                         <ul class="space-y-1 px-2">
                             <!-- Dashboard -->
                             <x-layouts.sidebar-link href="{{ route('dashboard') }}" icon='fas-house'
-                                :active="request()->routeIs('dashboard*')">Dashboard</x-layouts.sidebar-link>
+                                :active="request()->routeIs('dashboard*')">{{ __('Dashboard') }}</x-layouts.sidebar-link>
 
                             <!-- Example two level -->
-                            <x-layouts.sidebar-two-level-link-parent title="Example two level" icon="fas-house"
+                            <x-layouts.sidebar-two-level-link-parent :title="__('Example two level')" icon="fas-house"
                                 :active="request()->routeIs('two-level*')">
                                 <x-layouts.sidebar-two-level-link href="#" icon='fas-house'
-                                    :active="request()->routeIs('two-level*')">Child</x-layouts.sidebar-two-level-link>
+                                    :active="request()->routeIs('two-level*')">{{ __('Child') }}</x-layouts.sidebar-two-level-link>
                             </x-layouts.sidebar-two-level-link-parent>
 
                             <!-- Example three level -->
-                            <x-layouts.sidebar-two-level-link-parent title="Example three level" icon="fas-house"
+                            <x-layouts.sidebar-two-level-link-parent :title="__('Example three level')" icon="fas-house"
                                 :active="request()->routeIs('three-level*')">
                                 <x-layouts.sidebar-two-level-link href="#" icon='fas-house'
-                                    :active="request()->routeIs('three-level*')">Single Link</x-layouts.sidebar-two-level-link>
+                                    :active="request()->routeIs('three-level*')">{{ __('Single Link') }}</x-layouts.sidebar-two-level-link>
 
-                                <x-layouts.sidebar-three-level-parent title="Third Level" icon="fas-house"
+                                <x-layouts.sidebar-three-level-parent :title="__('Third Level')" icon="fas-house"
                                     :active="request()->routeIs('three-level*')">
                                     <x-layouts.sidebar-three-level-link href="#" :active="request()->routeIs('three-level*')">
-                                        Third Level Link
+                                        {{ __('Third Level Link') }}
                                     </x-layouts.sidebar-three-level-link>
                                 </x-layouts.sidebar-three-level-parent>
                             </x-layouts.sidebar-two-level-link-parent>

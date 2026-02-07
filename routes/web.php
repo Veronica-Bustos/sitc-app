@@ -1,7 +1,12 @@
 <?php
 
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Settings;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/language/{locale}', [LanguageController::class, 'switch'])
+    ->name('language.switch')
+    ->whereIn('locale', ['en', 'es']);
 
 Route::get('/', function () {
     return view('welcome');

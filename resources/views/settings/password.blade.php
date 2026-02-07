@@ -8,7 +8,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
         <a href="{{ route('settings.profile.edit') }}"
-           class="text-blue-600 dark:text-blue-400 hover:underline">{{ __('Profile') }}</a>
+            class="text-blue-600 dark:text-blue-400 hover:underline">{{ __('Profile') }}</a>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -39,19 +39,21 @@
                             @csrf
                             @method('PUT')
                             <div class="mb-4">
-                                <x-forms.input label="Current Password" name="current_password" type="password" />
+                                <x-forms.input label="{{ __('Current Password') }}" name="current_password"
+                                    type="password" />
                             </div>
 
                             <div class="mb-6">
-                                <x-forms.input label="New Password" name="password" type="password" />
+                                <x-forms.input label="{{ __('New Password') }}" name="password" type="password" />
                             </div>
 
                             <div class="mb-6">
-                                <x-forms.input label="Confirm Password" name="password_confirmation" type="password" />
+                                <x-forms.input label="{{ __('Confirm Password') }}" name="password_confirmation"
+                                    type="password" />
                             </div>
 
                             <div>
-                                <x-button type="primary">{{ __('Update Password') }}</x-button>
+                                <x-button type="primary">{{ __('Update password') }}</x-button>
                             </div>
                         </form>
                     </div>

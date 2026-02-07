@@ -15,6 +15,38 @@
 
         <!-- Right side: Search, notifications, profile -->
         <div class="flex items-center space-x-4">
+            <!-- Language Switcher -->
+            <div x-data="{ open: false }" class="relative mr-2">
+                <button @click="open = !open"
+                    class="flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none">
+                    <span class="mr-2">{{ strtoupper(app()->getLocale()) }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <div x-show="open" @click.away="open = false"
+                    class="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
+                    <a href="{{ route('language.switch', 'en') }}" @class([
+                        'block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700',
+                        'text-blue-600 dark:text-blue-400 font-medium' =>
+                            app()->getLocale() === 'en',
+                        'text-gray-700 dark:text-gray-300' => app()->getLocale() !== 'en',
+                    ])>
+                        🇺🇸 English
+                    </a>
+                    <a href="{{ route('language.switch', 'es') }}" @class([
+                        'block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700',
+                        'text-blue-600 dark:text-blue-400 font-medium' =>
+                            app()->getLocale() === 'es',
+                        'text-gray-700 dark:text-gray-300' => app()->getLocale() !== 'es',
+                    ])>
+                        🇪🇸 Español
+                    </a>
+                </div>
+            </div>
+
             <!-- Profile -->
             <div x-data="{ open: false }" class="relative">
                 <button @click="open = !open" class="flex items-center focus:outline-none">
@@ -43,7 +75,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                            Settings
+                            {{ __('Settings') }}
                         </div>
                     </a>
                     <div class="border-t border-gray-200 dark:border-gray-700"></div>
@@ -57,7 +89,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                 </svg>
-                                Logout
+                                {{ __('Log Out') }}
                             </div>
                         </button>
                     </form>

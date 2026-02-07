@@ -15,18 +15,19 @@
 
                 <!-- Email Input -->
                 <div class="mb-4">
-                    <x-forms.input name="email" type="email" label="Email"
+                    <x-forms.input name="email" type="email" label="{{ __('Email') }}"
                         value="{{ old('email', request('email')) }}" placeholder="your@email.com" />
                 </div>
 
                 <!-- Password Input -->
                 <div class="mb-4">
-                    <x-forms.input name="password" type="password" label="Password" placeholder="••••••••" />
+                    <x-forms.input name="password" type="password" label="{{ __('Password') }}"
+                        placeholder="••••••••" />
                 </div>
 
                 <!-- Confirm Password Input -->
                 <div class="mb-4">
-                    <x-forms.input name="password_confirmation" type="password" label="Confirm Password"
+                    <x-forms.input name="password_confirmation" type="password" label="{{ __('Confirm Password') }}"
                         placeholder="••••••••" />
                 </div>
 

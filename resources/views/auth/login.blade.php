@@ -11,12 +11,14 @@
                 @csrf
                 <!-- Email Input -->
                 <div>
-                    <x-forms.input label="Email" name="email" type="email" placeholder="your@email.com" autofocus />
+                    <x-forms.input label="{{ __('Email') }}" name="email" type="email" placeholder="your@email.com"
+                        autofocus />
                 </div>
 
                 <!-- Password Input -->
                 <div>
-                    <x-forms.input label="Password" name="password" type="password" placeholder="••••••••" />
+                    <x-forms.input label="{{ __('Password') }}" name="password" type="password"
+                        placeholder="••••••••" />
 
                     <!-- Remember me & password reset -->
                     <div class="flex items-center justify-between mt-2">
@@ -24,7 +26,7 @@
                             <a href="{{ route('password.request') }}"
                                 class="text-xs text-blue-600 dark:text-blue-400 hover:underline">{{ __('Forgot password?') }}</a>
                         @endif
-                        <x-forms.checkbox label="Remember me" name="remember" />
+                        <x-forms.checkbox label="{{ __('Remember me') }}" name="remember" />
                     </div>
                 </div>
 
