@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Inventory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Inventory\StoreRequest as ItemStoreRequest;
 use App\Http\Requests\Inventory\UpdateRequest as ItemUpdateRequest;
+use App\Models\Category;
 use App\Models\Item;
+use App\Models\Location;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -14,16 +16,66 @@ class ItemController extends Controller
 {
     public function index(Request $request): View
     {
-        $items = Item::all();
+        $query = Item::query()->with(['category', 'currentLocation']);
+
+        // Filtros
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('code', 'like', "%{$search}%")
+                    ->orWhere('name', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->input('category'));
+        }
+
+        if ($request->filled('location')) {
+            $query->where('current_location_id', $request->input('location'));
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        $items = $query->latest()->paginate(20)->withQueryString();
 
         return view('item.index', [
             'items' => $items,
+            'categories' => Category::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
+            'statuses' => [
+                'available' => __('status.available'),
+                'in_use' => __('status.in_use'),
+                'in_repair' => __('status.in_repair'),
+                'damaged' => __('status.damaged'),
+                'lost' => __('status.lost'),
+                'retired' => __('status.retired'),
+            ],
         ]);
     }
 
     public function create(Request $request): View
     {
-        return view('item.create');
+        return view('item.create', [
+            'categories' => Category::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
+            'statuses' => [
+                'available' => __('status.available'),
+                'in_use' => __('status.in_use'),
+                'in_repair' => __('status.in_repair'),
+                'damaged' => __('status.damaged'),
+                'lost' => __('status.lost'),
+                'retired' => __('status.retired'),
+            ],
+            'conditions' => [
+                'excellent' => __('condition.excellent'),
+                'good' => __('condition.good'),
+                'fair' => __('condition.fair'),
+                'poor' => __('condition.poor'),
+            ],
+        ]);
     }
 
     public function store(ItemStoreRequest $request): RedirectResponse
@@ -37,6 +89,10 @@ class ItemController extends Controller
 
     public function show(Request $request, Item $item): View
     {
+        $item->load(['category', 'currentLocation', 'attachments', 'inventoryMovements' => function ($query) {
+            $query->latest()->limit(5)->with(['fromLocation', 'toLocation', 'user']);
+        }]);
+
         return view('item.show', [
             'item' => $item,
         ]);
@@ -46,6 +102,35 @@ class ItemController extends Controller
     {
         return view('item.edit', [
             'item' => $item,
+            'categories' => Category::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
+            'statuses' => [
+                'available' => __('status.available'),
+                'in_use' => __('status.in_use'),
+                'in_repair' => __('status.in_repair'),
+                'damaged' => __('status.damaged'),
+                'lost' => __('status.lost'),
+                'retired' => __('status.retired'),
+            ],
+            'conditions' => [
+                'excellent' => __('condition.excellent'),
+                'good' => __('condition.good'),
+                'fair' => __('condition.fair'),
+                'poor' => __('condition.poor'),
+            ],
+        ]);
+    }
+
+    public function history(Request $request, Item $item): View
+    {
+        $movements = $item->inventoryMovements()
+            ->with(['fromLocation', 'toLocation', 'user'])
+            ->latest()
+            ->paginate(20);
+
+        return view('item.history', [
+            'item' => $item,
+            'movements' => $movements,
         ]);
     }
 

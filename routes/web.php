@@ -33,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('locations', LocationController::class);
     Route::resource('items', ItemController::class);
+    Route::get('items/{item}/history', [ItemController::class, 'history'])->name('items.history');
     Route::resource('inventory-movements', MovementController::class);
     Route::resource('maintenance-records', MaintenanceController::class);
     Route::resource('attachments', AttachmentController::class);

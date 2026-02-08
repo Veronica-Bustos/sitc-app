@@ -1,5 +1,5 @@
 @props([
-    'label',
+    'label' => null,
     'name',
     'type' => 'text',
     'placeholder' => '',
@@ -8,7 +8,7 @@
     'labelClass' => '',
 ])
 
-@if ($label)
+@if (!empty($label))
     <label for="{{ $name }}"
         {{ $attributes->merge(['class' => 'block ml-1 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 ' . $labelClass]) }}>
         {{ $label }}

@@ -34,7 +34,11 @@ final class ItemControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('item.index');
-        $response->assertViewHas('items', $items);
+        $response->assertViewHas('items');
+
+        $paginator = $response->viewData('items');
+        $this->assertInstanceOf(\Illuminate\Pagination\LengthAwarePaginator::class, $paginator);
+        $this->assertEquals($items->count(), $paginator->count());
     }
 
     #[Test]
@@ -167,5 +171,44 @@ final class ItemControllerTest extends TestCase
         $response->assertRedirect(route('items.index'));
 
         $this->assertSoftDeleted($item);
+    }
+
+    #[Test]
+    public function history_displays_view(): void
+    {
+        $item = Item::factory()->create();
+
+        $response = $this->get(route('items.history', $item));
+
+        $response->assertOk();
+        $response->assertViewIs('item.history');
+        $response->assertViewHas('item', $item);
+        $response->assertViewHas('movements');
+    }
+
+    #[Test]
+    public function history_shows_movements_when_present(): void
+    {
+        $item = Item::factory()->create();
+
+        // Create movements for the item (use movement_type values that the view expects)
+        $movements = \Database\Factories\InventoryMovementFactory::new()->count(3)->for($item)->state(['movement_type' => 'transfer'])->create();
+
+        $response = $this->get(route('items.history', $item));
+
+        $response->assertOk();
+        $response->assertViewIs('item.history');
+        $response->assertViewHas('movements');
+
+        // Ensure the rendered HTML contains data from one movement (notes or reference)
+        $first = $movements->first();
+        if ($first->notes) {
+            $response->assertSee(e($first->notes));
+        } elseif ($first->reference_document) {
+            $response->assertSee(e($first->reference_document));
+        } else {
+            // fallback: check quantity
+            $response->assertSee((string) $first->quantity);
+        }
     }
 }
