@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Laravel\Scout\Attributes\SearchUsingFullText;
+use Laravel\Scout\Attributes\SearchUsingPrefix;
+use Laravel\Scout\Searchable;
 
 class InventoryMovement extends Model
 {
-    use HasFactory;
+    use \App\Traits\Filterable, HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -69,5 +72,23 @@ class InventoryMovement extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    use Searchable;
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array<string, mixed>
+     */
+    #[SearchUsingPrefix(['id'])]
+    #[SearchUsingFullText(['reason', 'notes'])]
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'reason' => $this->reason,
+            'notes' => $this->notes,
+        ];
     }
 }

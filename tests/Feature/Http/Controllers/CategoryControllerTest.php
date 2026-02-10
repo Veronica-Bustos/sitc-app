@@ -33,7 +33,10 @@ final class CategoryControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('category.index');
-        $response->assertViewHas('categories', $categories);
+        $response->assertViewHas('categories');
+
+        $viewCategories = $response->viewData('categories');
+        $this->assertEquals(3, $viewCategories->total());
     }
 
     #[Test]

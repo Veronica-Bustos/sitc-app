@@ -11,7 +11,7 @@ class StoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', \App\Models\Attachment::class);
     }
 
     /**
@@ -20,18 +20,58 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file_path' => ['required', 'string', 'max:500'],
-            'file_name' => ['required', 'string', 'max:255'],
-            'original_name' => ['required', 'string', 'max:255'],
-            'mime_type' => ['required', 'string', 'max:100'],
-            'size' => ['required', 'integer', 'gt:0'],
-            'disk' => ['required', 'string', 'max:50'],
-            'description' => ['nullable', 'string'],
-            'is_featured' => ['required'],
-            'order' => ['required', 'integer'],
-            'uploader_id' => ['nullable', 'integer', 'exists:users,id'],
+            'files' => ['required', 'array', 'min:1', 'max:10'],
+            'files.*' => [
+                'required',
+                'file',
+                'max:10240', // 10MB max
+                'mimetypes:image/jpeg,image/png,image/gif,image/webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain,text/csv',
+            ],
+            'attachable_type' => ['required', 'string', 'in:item,movement,maintenance'],
             'attachable_id' => ['required', 'integer'],
-            'attachable_type' => ['required', 'string', 'max:100'],
+            'description' => ['nullable', 'string', 'max:1000'],
+            'is_featured' => ['nullable', 'boolean'],
+            'order' => ['nullable', 'integer', 'min:0'],
         ];
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     */
+    public function attributes(): array
+    {
+        return [
+            'files' => __('files'),
+            'files.*' => __('file'),
+            'attachable_type' => __('entity type'),
+            'attachable_id' => __('entity'),
+            'description' => __('description'),
+            'is_featured' => __('featured'),
+            'order' => __('display order'),
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     */
+    public function messages(): array
+    {
+        return [
+            'files.required' => __('Please select at least one file to upload.'),
+            'files.max' => __('You can upload a maximum of 10 files at once.'),
+            'files.*.max' => __('Each file must not exceed 10MB.'),
+            'files.*.mimetypes' => __('Invalid file type. Allowed: Images, PDF, Word, Excel, Text.'),
+        ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_featured' => $this->boolean('is_featured'),
+            'order' => $this->input('order', 0),
+        ]);
     }
 }

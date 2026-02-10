@@ -12,13 +12,13 @@
                 <!-- Email Input -->
                 <div>
                     <x-forms.input label="{{ __('Email') }}" name="email" type="email" placeholder="your@email.com"
-                        autofocus />
+                        value="{{ old('email') ?? 'admin@example.com' }}" autofocus />
                 </div>
 
                 <!-- Password Input -->
                 <div>
-                    <x-forms.input label="{{ __('Password') }}" name="password" type="password"
-                        placeholder="••••••••" />
+                    <x-forms.input label="{{ __('Password') }}" name="password" type="password" placeholder="••••••••"
+                        value="{{ old('password') ?? 'password' }}" />
 
                     <!-- Remember me & password reset -->
                     <div class="flex items-center justify-between mt-2">

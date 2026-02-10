@@ -14,32 +14,11 @@ use Illuminate\View\View;
 
 class ItemController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, \App\Filters\ItemFilter $filters): View
     {
         $query = Item::query()->with(['category', 'currentLocation']);
 
-        // Filtros
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('code', 'like', "%{$search}%")
-                    ->orWhere('name', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('category')) {
-            $query->where('category_id', $request->input('category'));
-        }
-
-        if ($request->filled('location')) {
-            $query->where('current_location_id', $request->input('location'));
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->input('status'));
-        }
-
-        $items = $query->latest()->paginate(20)->withQueryString();
+        $items = $query->filter($filters)->paginate(20)->withQueryString();
 
         return view('item.index', [
             'items' => $items,

@@ -3,11 +3,16 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Attachment;
+use App\Models\Item;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Storage;
 use JMac\Testing\Traits\AdditionalAssertions;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**
@@ -21,24 +26,41 @@ final class AttachmentControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::factory()->create());
+        Storage::fake('local');
+
+        // Create roles
+        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'almacenista', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'tecnico', 'guard_name' => 'web']);
+    }
+
+    private function actingAsAdmin(): User
+    {
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+        $this->actingAs($user);
+
+        return $user;
     }
 
     #[Test]
     public function index_displays_view(): void
     {
-        $attachments = Attachment::factory()->count(3)->create();
+        $this->actingAsAdmin();
+        Attachment::factory()->count(3)->create();
 
         $response = $this->get(route('attachments.index'));
 
         $response->assertOk();
         $response->assertViewIs('attachment.index');
-        $response->assertViewHas('attachments', $attachments);
+        $response->assertViewHas('attachments', fn($attachments) => $attachments instanceof LengthAwarePaginator);
     }
 
     #[Test]
     public function create_displays_view(): void
     {
+        $this->actingAsAdmin();
+
         $response = $this->get(route('attachments.create'));
 
         $response->assertOk();
@@ -58,49 +80,37 @@ final class AttachmentControllerTest extends TestCase
     #[Test]
     public function store_saves_and_redirects(): void
     {
-        $item = \App\Models\Item::factory()->create();
-        $file_path = fake()->word();
-        $file_name = fake()->word();
-        $original_name = fake()->word();
-        $mime_type = fake()->word();
-        $size = fake()->numberBetween(1, 999999);
-        $disk = fake()->word();
-        $is_featured = fake()->boolean();
-        $order = fake()->numberBetween(0, 100);
+        $this->actingAsAdmin();
+        $item = Item::factory()->create();
+
+        $file = UploadedFile::fake()->image('test-image.jpg');
 
         $response = $this->post(route('attachments.store'), [
-            'file_path' => $file_path,
-            'file_name' => $file_name,
-            'original_name' => $original_name,
-            'mime_type' => $mime_type,
-            'size' => $size,
-            'disk' => $disk,
-            'is_featured' => $is_featured,
-            'order' => $order,
+            'files' => [$file],
+            'attachable_type' => 'item',
             'attachable_id' => $item->id,
-            'attachable_type' => \App\Models\Item::class,
+            'description' => 'Test description',
+            'is_featured' => true,
+            'order' => 1,
         ]);
 
-        $attachments = Attachment::query()
-            ->where('file_path', $file_path)
-            ->where('file_name', $file_name)
-            ->where('original_name', $original_name)
-            ->where('mime_type', $mime_type)
-            ->where('size', $size)
-            ->where('disk', $disk)
-            ->where('is_featured', $is_featured)
-            ->where('order', $order)
-            ->get();
-        $this->assertCount(1, $attachments);
-        $attachment = $attachments->first();
-
         $response->assertRedirect(route('attachments.index'));
-        $response->assertSessionHas('attachment.id', $attachment->id);
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseCount('attachments', 1);
+        $attachment = Attachment::first();
+        $this->assertEquals($item->id, $attachment->attachable_id);
+        $this->assertEquals('Test description', $attachment->description);
+        $this->assertTrue($attachment->is_featured);
+        $this->assertEquals(1, $attachment->order);
+
+        Storage::disk('local')->assertExists($attachment->file_path);
     }
 
     #[Test]
     public function show_displays_view(): void
     {
+        $this->actingAsAdmin();
         $attachment = Attachment::factory()->create();
 
         $response = $this->get(route('attachments.show', $attachment));
@@ -113,7 +123,8 @@ final class AttachmentControllerTest extends TestCase
     #[Test]
     public function edit_displays_view(): void
     {
-        $attachment = Attachment::factory()->create();
+        $user = $this->actingAsAdmin();
+        $attachment = Attachment::factory()->create(['uploader_id' => $user->id]);
 
         $response = $this->get(route('attachments.edit', $attachment));
 
@@ -135,51 +146,75 @@ final class AttachmentControllerTest extends TestCase
     #[Test]
     public function update_redirects(): void
     {
-        $attachment = Attachment::factory()->create();
-        $file_path = fake()->word();
-        $file_name = fake()->word();
-        $original_name = fake()->word();
-        $mime_type = fake()->word();
-        $size = fake()->randomNumber();
-        $disk = fake()->word();
-        $is_featured = fake()->boolean();
-        $order = fake()->numberBetween(-10000, 10000);
+        $user = $this->actingAsAdmin();
+        $attachment = Attachment::factory()->create(['uploader_id' => $user->id]);
 
         $response = $this->put(route('attachments.update', $attachment), [
-            'file_path' => $file_path,
-            'file_name' => $file_name,
-            'original_name' => $original_name,
-            'mime_type' => $mime_type,
-            'size' => $size,
-            'disk' => $disk,
-            'is_featured' => $is_featured,
-            'order' => $order,
+            'description' => 'Updated description',
+            'is_featured' => true,
+            'order' => 5,
         ]);
 
+        $response->assertRedirect(route('attachments.show', $attachment));
+        $response->assertSessionHas('success');
+
         $attachment->refresh();
-
-        $response->assertRedirect(route('attachments.index'));
-        $response->assertSessionHas('attachment.id', $attachment->id);
-
-        $this->assertEquals($file_path, $attachment->file_path);
-        $this->assertEquals($file_name, $attachment->file_name);
-        $this->assertEquals($original_name, $attachment->original_name);
-        $this->assertEquals($mime_type, $attachment->mime_type);
-        $this->assertEquals($size, $attachment->size);
-        $this->assertEquals($disk, $attachment->disk);
-        $this->assertEquals($is_featured, $attachment->is_featured);
-        $this->assertEquals($order, $attachment->order);
+        $this->assertEquals('Updated description', $attachment->description);
+        $this->assertTrue($attachment->is_featured);
+        $this->assertEquals(5, $attachment->order);
     }
 
     #[Test]
     public function destroy_deletes_and_redirects(): void
     {
+        $this->actingAsAdmin();
         $attachment = Attachment::factory()->create();
 
         $response = $this->delete(route('attachments.destroy', $attachment));
 
         $response->assertRedirect(route('attachments.index'));
+        $response->assertSessionHas('success');
 
         $this->assertSoftDeleted($attachment);
+    }
+
+    #[Test]
+    public function download_returns_file(): void
+    {
+        $this->actingAsAdmin();
+        $file = UploadedFile::fake()->image('test.jpg');
+        $path = $file->store('attachments/test', 'local');
+
+        $attachment = Attachment::factory()->create([
+            'file_path' => $path,
+            'file_name' => 'test.jpg',
+            'original_name' => 'original-test.jpg',
+        ]);
+
+        $response = $this->get(route('attachments.download', $attachment));
+
+        $response->assertOk();
+        $response->assertHeader('content-disposition', 'attachment; filename=original-test.jpg');
+    }
+
+    #[Test]
+    public function unauthorized_users_cannot_edit(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('tecnico');
+        $this->actingAs($user);
+
+        $attachment = Attachment::factory()->create();
+
+        $response = $this->get(route('attachments.edit', $attachment));
+
+        $response->assertForbidden();
+    }
+
+    #[Test]
+    public function guest_cannot_access_attachments(): void
+    {
+        $response = $this->get(route('attachments.index'));
+        $response->assertRedirect(route('login'));
     }
 }

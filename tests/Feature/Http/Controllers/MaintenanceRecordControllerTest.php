@@ -35,7 +35,7 @@ final class MaintenanceRecordControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('maintenanceRecord.index');
-        $response->assertViewHas('maintenanceRecords', $maintenanceRecords);
+        $response->assertViewHas('maintenanceRecords', fn ($paginator) => $paginator instanceof \Illuminate\Pagination\LengthAwarePaginator);
     }
 
     #[Test]

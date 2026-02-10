@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\InventoryMovement;
+use App\Models\Item;
+use App\Models\Location;
 use Illuminate\Database\Seeder;
 
 class InventoryMovementSeeder extends Seeder
@@ -12,6 +14,27 @@ class InventoryMovementSeeder extends Seeder
      */
     public function run(): void
     {
-        InventoryMovement::factory()->count(5)->create();
+        $locations = Location::all();
+        $items = Item::all();
+
+        if ($locations->isEmpty()) {
+            $this->call(LocationSeeder::class);
+            $locations = Location::all();
+        }
+
+        if ($items->isEmpty()) {
+            $this->call(ItemSeeder::class);
+            $items = Item::all();
+        }
+
+        for ($i = 0; $i < 5; $i++) {
+            InventoryMovement::factory()->create([
+                'item_id' => $items->random()->id,
+                'from_location_id' => $locations->random()->id,
+                'to_location_id' => $locations->random()->id,
+            ]);
+        }
+
+        $this->command->info('Seeded inventory movements: 5');
     }
 }

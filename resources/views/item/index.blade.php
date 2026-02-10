@@ -30,29 +30,12 @@
         </div>
 
         <!-- Filters -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 mb-6 border border-gray-200 dark:border-gray-700">
-            <form method="GET" action="{{ route('items.index') }}"
-                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                <div class="lg:col-span-2">
-                    <x-forms.input name="search" :value="request('search')"
-                        placeholder="{{ __('Search by code or name...') }}" />
-                </div>
-                <x-select name="category" :options="$categories->pluck('name', 'id')->toArray()" :value="request('category')"
-                    placeholder="{{ __('All Categories') }}" />
-                <x-select name="location" :options="$locations->pluck('name', 'id')->toArray()" :value="request('location')" placeholder="{{ __('All Locations') }}" />
-                <div class="flex gap-2">
-                    <x-select name="status" :options="$statuses" :value="request('status')" placeholder="{{ __('All Statuses') }}"
-                        class="flex-1" />
-                    @if (request()->hasAny(['search', 'category', 'location', 'status']))
-                        <a href="{{ route('items.index') }}"
-                            class="inline-flex items-center px-3 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                            title="{{ __('Clear filters') }}">
-                            <x-fas-times class="h-4 w-4" />
-                        </a>
-                    @endif
-                </div>
-            </form>
-        </div>
+        <x-filters action="{{ route('items.index') }}" :has-filters="request()->hasAny(['search', 'category', 'location', 'status'])" :active-filters-count="count(array_filter(request()->only(['category', 'location', 'status']), fn($v) => $v !== null && $v !== ''))"
+            search-placeholder="{{ __('Search by code or name...') }}" search-value="{{ request('search') }}">
+            <x-select name="category" :options="$categories->pluck('name', 'id')->toArray()" :value="request('category')" placeholder="{{ __('All Categories') }}" />
+            <x-select name="location" :options="$locations->pluck('name', 'id')->toArray()" :value="request('location')" placeholder="{{ __('All Locations') }}" />
+            <x-select name="status" :options="$statuses" :value="request('status')" placeholder="{{ __('All Statuses') }}" />
+        </x-filters>
 
         <!-- Table -->
         <div
@@ -61,26 +44,11 @@
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                {{ __('Code') }}
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                {{ __('Name') }}
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                {{ __('Category') }}
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                {{ __('Location') }}
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                {{ __('Status') }}
-                            </th>
+                            <x-th-sortable name="code">{{ __('Code') }}</x-th-sortable>
+                            <x-th-sortable name="name">{{ __('Name') }}</x-th-sortable>
+                            <x-th-sortable name="category">{{ __('Category') }}</x-th-sortable>
+                            <x-th-sortable name="location">{{ __('Location') }}</x-th-sortable>
+                            <x-th-sortable name="status">{{ __('Status') }}</x-th-sortable>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                 {{ __('Condition') }}

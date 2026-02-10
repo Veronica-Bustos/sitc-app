@@ -28,6 +28,12 @@ return new class extends Migration
             $table->morphs('attachable');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('file_name');
+
+            if (Schema::getConnection()->getDriverName() !== 'sqlite') {
+                $table->fullText(['original_name', 'description']);
+            }
         });
 
         Schema::enableForeignKeyConstraints();

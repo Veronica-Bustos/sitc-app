@@ -37,6 +37,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('inventory-movements', MovementController::class);
     Route::resource('maintenance-records', MaintenanceController::class);
     Route::resource('attachments', AttachmentController::class);
+    Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])
+        ->name('attachments.download');
+    Route::get('attachments/{attachment}/preview', [AttachmentController::class, 'preview'])
+        ->name('attachments.preview');
 });
 
 require __DIR__.'/auth.php';

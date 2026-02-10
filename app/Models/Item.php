@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Attributes\SearchUsingFullText;
+use Laravel\Scout\Attributes\SearchUsingPrefix;
+use Laravel\Scout\Searchable;
 
 class Item extends Model
 {
-    use HasFactory, SoftDeletes;
+    use \App\Traits\Filterable, HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -84,5 +87,26 @@ class Item extends Model
     public function currentLocation(): BelongsTo
     {
         return $this->belongsTo(Location::class);
+    }
+
+    use Searchable;
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array<string, mixed>
+     */
+    #[SearchUsingPrefix(['id', 'code', 'name'])]
+    #[SearchUsingFullText(['name', 'description', 'brand', 'model'])]
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'code' => $this->code,
+            'name' => $this->name,
+            'description' => $this->description,
+            'brand' => $this->brand,
+            'model' => $this->model,
+        ];
     }
 }

@@ -11,7 +11,9 @@ class UpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $attachment = $this->route('attachment');
+
+        return $this->user()->can('update', $attachment);
     }
 
     /**
@@ -20,16 +22,32 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file_path' => ['required', 'string', 'max:500'],
-            'file_name' => ['required', 'string', 'max:255'],
-            'original_name' => ['required', 'string', 'max:255'],
-            'mime_type' => ['required', 'string', 'max:100'],
-            'size' => ['required', 'integer', 'gt:0'],
-            'disk' => ['required', 'string', 'max:50'],
-            'description' => ['nullable', 'string'],
-            'is_featured' => ['required'],
-            'order' => ['required', 'integer'],
-            'uploader_id' => ['nullable', 'integer', 'exists:users,id'],
+            'description' => ['nullable', 'string', 'max:1000'],
+            'is_featured' => ['nullable', 'boolean'],
+            'order' => ['nullable', 'integer', 'min:0'],
         ];
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     */
+    public function attributes(): array
+    {
+        return [
+            'description' => __('description'),
+            'is_featured' => __('featured'),
+            'order' => __('display order'),
+        ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_featured' => $this->boolean('is_featured'),
+            'order' => $this->input('order', 0),
+        ]);
     }
 }

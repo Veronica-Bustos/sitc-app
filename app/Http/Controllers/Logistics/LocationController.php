@@ -12,12 +12,16 @@ use Illuminate\View\View;
 
 class LocationController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, \App\Filters\LocationFilter $filters): View
     {
-        $locations = Location::all();
+        $query = Location::query();
+
+        $locations = $query->filter($filters)->with('responsibleUser')->withCount('items')->paginate(20)->withQueryString();
 
         return view('location.index', [
             'locations' => $locations,
+            'types' => Location::select('type')->distinct()->pluck('type'),
+            'responsibles' => \App\Models\User::select('id', 'name')->get(),
         ]);
     }
 

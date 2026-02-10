@@ -38,6 +38,12 @@ return new class extends Migration
             $table->string('dimensions', 50)->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('name');
+
+            if (Schema::getConnection()->getDriverName() !== 'sqlite') {
+                $table->fullText(['name', 'description', 'brand', 'model']);
+            }
         });
 
         Schema::enableForeignKeyConstraints();
