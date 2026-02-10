@@ -12,12 +12,15 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, \App\Filters\CategoryFilter $filters): View
     {
-        $categories = Category::all();
+        $query = Category::query();
+
+        $categories = $query->filter($filters)->withCount('items')->paginate(20)->withQueryString();
 
         return view('category.index', [
             'categories' => $categories,
+            'parents' => Category::select('id', 'name')->get(),
         ]);
     }
 

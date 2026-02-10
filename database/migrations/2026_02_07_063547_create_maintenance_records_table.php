@@ -32,6 +32,10 @@ return new class extends Migration
             $table->date('next_maintenance_date')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            if (Schema::getConnection()->getDriverName() !== 'sqlite') {
+                $table->fullText(['description', 'diagnosis', 'actions_taken']);
+            }
         });
 
         Schema::enableForeignKeyConstraints();

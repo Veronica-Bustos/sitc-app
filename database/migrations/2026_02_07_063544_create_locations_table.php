@@ -28,6 +28,12 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('name');
+
+            if (Schema::getConnection()->getDriverName() !== 'sqlite') {
+                $table->fullText(['name', 'address', 'notes']);
+            }
         });
 
         Schema::enableForeignKeyConstraints();

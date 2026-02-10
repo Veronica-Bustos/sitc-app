@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Attributes\SearchUsingFullText;
+use Laravel\Scout\Attributes\SearchUsingPrefix;
+use Laravel\Scout\Searchable;
 
 class Location extends Model
 {
-    use HasFactory, SoftDeletes;
+    use \App\Traits\Filterable, HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -65,5 +68,25 @@ class Location extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Location::class);
+    }
+
+    use Searchable;
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array<string, mixed>
+     */
+    #[SearchUsingPrefix(['id', 'code', 'name'])]
+    #[SearchUsingFullText(['name', 'address', 'notes'])]
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'code' => $this->code,
+            'name' => $this->name,
+            'address' => $this->address,
+            'notes' => $this->notes,
+        ];
     }
 }

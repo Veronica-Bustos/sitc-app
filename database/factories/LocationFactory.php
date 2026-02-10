@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\LocationStatusEnum;
+use App\Enums\LocationTypeEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LocationFactory extends Factory
@@ -14,12 +16,12 @@ class LocationFactory extends Factory
         return [
             'name' => fake()->unique()->company(),
             'code' => fake()->unique()->bothify('LOC-####'),
-            'type' => fake()->randomElement(['WAREHOUSE', 'SITE', 'OFFICE']),
+            'type' => fake()->randomElement(LocationTypeEnum::values()),
             'address' => fake()->address(),
             'coordinates' => null,
             'responsible_user_id' => null,
             'parent_id' => null,
-            'status' => fake()->randomElement(['ACTIVE', 'INACTIVE', 'CLOSED']),
+            'status' => fake()->randomElement(LocationStatusEnum::values()),
             'start_date' => fake()->date(),
             'end_date' => null,
             'notes' => null,

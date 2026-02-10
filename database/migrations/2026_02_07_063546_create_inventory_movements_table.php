@@ -26,6 +26,10 @@ return new class extends Migration
             $table->string('reference_document', 50)->nullable();
             $table->dateTime('performed_at');
             $table->timestamps();
+
+            if (Schema::getConnection()->getDriverName() !== 'sqlite') {
+                $table->fullText(['reason', 'notes']);
+            }
         });
 
         Schema::enableForeignKeyConstraints();

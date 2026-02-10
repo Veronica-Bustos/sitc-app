@@ -33,7 +33,10 @@ final class LocationControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('location.index');
-        $response->assertViewHas('locations', $locations);
+        $response->assertViewHas('locations');
+
+        $viewLocations = $response->viewData('locations');
+        $this->assertEquals(3, $viewLocations->total());
     }
 
     #[Test]

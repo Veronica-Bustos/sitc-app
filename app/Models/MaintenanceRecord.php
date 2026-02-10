@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Attributes\SearchUsingFullText;
+use Laravel\Scout\Attributes\SearchUsingPrefix;
+use Laravel\Scout\Searchable;
 
 class MaintenanceRecord extends Model
 {
-    use HasFactory, SoftDeletes;
+    use \App\Traits\Filterable, HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -73,5 +76,24 @@ class MaintenanceRecord extends Model
     public function requester(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    use Searchable;
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array<string, mixed>
+     */
+    #[SearchUsingPrefix(['id'])]
+    #[SearchUsingFullText(['description', 'diagnosis', 'actions_taken'])]
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'description' => $this->description,
+            'diagnosis' => $this->diagnosis,
+            'actions_taken' => $this->actions_taken,
+        ];
     }
 }
