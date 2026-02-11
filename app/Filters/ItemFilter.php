@@ -34,7 +34,6 @@ class ItemFilter extends QueryFilter
 
     public function search($value)
     {
-        Log::debug('Attempting to search items with value: ' . $value);
         try {
             // Use keys() when available to get IDs efficiently
             $ids = Item::search($value)->keys();
