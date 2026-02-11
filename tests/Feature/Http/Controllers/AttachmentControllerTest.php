@@ -34,15 +34,6 @@ final class AttachmentControllerTest extends TestCase
         $this->seed(PermissionsSeeder::class);
     }
 
-    private function actingAsUserWithPermissions(array $permissions): User
-    {
-        $user = User::factory()->create();
-        $user->givePermissionTo($permissions);
-        $this->actingAs($user);
-
-        return $user;
-    }
-
     private function actingAsUserWithoutPermissions(): User
     {
         $user = User::factory()->create();
@@ -135,7 +126,7 @@ final class AttachmentControllerTest extends TestCase
     #[Test]
     public function show_displays_view(): void
     {
-        $this->actingAsUserWithoutPermissions();
+        $this->actingAsAttachmentViewer();
         $attachment = Attachment::factory()->create();
 
         $response = $this->get(route('attachments.show', $attachment));
@@ -206,7 +197,7 @@ final class AttachmentControllerTest extends TestCase
     #[Test]
     public function download_returns_file(): void
     {
-        $this->actingAsUserWithoutPermissions();
+        $this->actingAsAttachmentViewer();
         $file = UploadedFile::fake()->image('test.jpg');
         $path = $file->store('attachments/test', 'local');
 

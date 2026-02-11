@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\PermissionEnum;
 use App\Models\Item;
 use App\Models\User;
 
@@ -12,7 +13,7 @@ class ItemPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('items.view');
+        return $user->can(PermissionEnum::ITEMS_VIEW->value);
     }
 
     /**
@@ -20,7 +21,7 @@ class ItemPolicy
      */
     public function view(User $user, Item $item): bool
     {
-        return $user->can('items.view');
+        return $user->can(PermissionEnum::ITEMS_VIEW->value);
     }
 
     /**
@@ -28,7 +29,7 @@ class ItemPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('items.create');
+        return $user->can(PermissionEnum::ITEMS_CREATE->value);
     }
 
     /**
@@ -36,7 +37,7 @@ class ItemPolicy
      */
     public function update(User $user, Item $item): bool
     {
-        return $user->can('items.edit');
+        return $user->can(PermissionEnum::ITEMS_EDIT->value);
     }
 
     /**
@@ -44,7 +45,15 @@ class ItemPolicy
      */
     public function delete(User $user, Item $item): bool
     {
-        return $user->can('items.delete');
+        return $user->can(PermissionEnum::ITEMS_DELETE->value);
+    }
+
+    /**
+     * Determine whether the user can view the item history.
+     */
+    public function history(User $user, Item $item): bool
+    {
+        return $user->can(PermissionEnum::ITEMS_HISTORY->value);
     }
 
     /**
@@ -52,7 +61,7 @@ class ItemPolicy
      */
     public function restore(User $user, Item $item): bool
     {
-        return $user->can('items.delete');
+        return $user->can(PermissionEnum::ITEMS_DELETE->value);
     }
 
     /**
@@ -60,6 +69,6 @@ class ItemPolicy
      */
     public function forceDelete(User $user, Item $item): bool
     {
-        return $user->can('items.delete');
+        return $user->can(PermissionEnum::ITEMS_DELETE->value);
     }
 }

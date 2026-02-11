@@ -36,7 +36,7 @@ describe('Role and Permission System', function () {
             $admin = User::where('email', 'admin@example.com')->first();
 
             expect($admin)->not->toBeNull();
-            expect($admin->name)->toBe('Camila Rojas');
+            expect($admin->name)->toBe('Veronica Bustos');
             expect(Hash::check('password', $admin->password))->toBeTrue();
             expect($admin->email_verified_at)->not->toBeNull();
         });

@@ -16,11 +16,11 @@ Route::get('/language/{locale}', [LanguageController::class, 'switch'])
     ->whereIn('locale', ['en', 'es']);
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('dashboard');
 })->name('home');
 
 Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'can:dashboard.view'])
     ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {

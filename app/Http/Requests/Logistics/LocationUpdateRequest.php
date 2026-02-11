@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Logistics;
 
+use App\Models\Location;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LocationUpdateRequest extends FormRequest
@@ -11,7 +12,9 @@ class LocationUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $location = $this->route('location');
+
+        return $location instanceof Location && $this->user()->can('update', $location);
     }
 
     /**

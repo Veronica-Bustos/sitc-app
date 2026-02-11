@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Logistics;
 
+use App\Models\InventoryMovement;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MovementUpdateRequest extends FormRequest
@@ -11,7 +12,9 @@ class MovementUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $movement = $this->route('inventory_movement');
+
+        return $movement instanceof InventoryMovement && $this->user()->can('update', $movement);
     }
 
     /**

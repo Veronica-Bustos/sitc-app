@@ -49,11 +49,13 @@
                     {{ $attachment->original_name }}
                 </h1>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('attachments.download', $attachment) }}"
-                        class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
-                        <x-fas-download class="h-5 w-5 mr-2" />
-                        {{ __('Download') }}
-                    </a>
+                    @can('download', $attachment)
+                        <a href="{{ route('attachments.download', $attachment) }}"
+                            class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+                            <x-fas-download class="h-5 w-5 mr-2" />
+                            {{ __('Download') }}
+                        </a>
+                    @endcan
                     @can('update', $attachment)
                         <a href="{{ route('attachments.edit', $attachment) }}"
                             class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
@@ -86,12 +88,14 @@
                             <div class="text-center">
                                 <p class="text-gray-600 dark:text-gray-400 mb-4">
                                     {{ __('PDF Preview not available. Please download to view.') }}</p>
-                                <a href="{{ route('attachments.download', $attachment) }}"
-                                    class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-                                    target="_blank">
-                                    <x-fas-external-link-alt class="h-5 w-5 mr-2" />
-                                    {{ __('Open in Browser') }}
-                                </a>
+                                @can('download', $attachment)
+                                    <a href="{{ route('attachments.download', $attachment) }}"
+                                        class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                                        target="_blank">
+                                        <x-fas-external-link-alt class="h-5 w-5 mr-2" />
+                                        {{ __('Open in Browser') }}
+                                    </a>
+                                @endcan
                             </div>
                         </div>
                     @else

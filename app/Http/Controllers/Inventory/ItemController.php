@@ -14,6 +14,11 @@ use Illuminate\View\View;
 
 class ItemController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Item::class, 'item');
+    }
+
     public function index(Request $request, \App\Filters\ItemFilter $filters): View
     {
         $query = Item::query()->with(['category', 'currentLocation']);
@@ -102,6 +107,8 @@ class ItemController extends Controller
 
     public function history(Request $request, Item $item): View
     {
+        $this->authorize('history', $item);
+
         $movements = $item->inventoryMovements()
             ->with(['fromLocation', 'toLocation', 'user'])
             ->latest()

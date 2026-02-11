@@ -18,6 +18,11 @@ use Illuminate\View\View;
 
 class MaintenanceController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(MaintenanceRecord::class, 'maintenance_record');
+    }
+
     public function index(Request $request, \App\Filters\MaintenanceFilter $filters): View
     {
         $query = MaintenanceRecord::query()

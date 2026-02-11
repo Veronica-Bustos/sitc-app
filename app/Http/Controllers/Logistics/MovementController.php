@@ -16,6 +16,11 @@ use Illuminate\View\View;
 
 class MovementController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(InventoryMovement::class, 'inventory_movement');
+    }
+
     public function index(Request $request, \App\Filters\MovementFilter $filters): View
     {
         $query = InventoryMovement::query()

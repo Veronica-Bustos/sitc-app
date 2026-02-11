@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Maintenance;
 
+use App\Models\MaintenanceRecord;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
@@ -11,7 +12,7 @@ class StoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', MaintenanceRecord::class);
     }
 
     /**

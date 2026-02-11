@@ -2,17 +2,18 @@
 
 namespace App\Policies;
 
+use App\Enums\PermissionEnum;
 use App\Models\InventoryMovement;
 use App\Models\User;
 
-class MovementPolicy
+class InventoryMovementPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('movements.view');
+        return $user->can(PermissionEnum::MOVEMENTS_VIEW->value);
     }
 
     /**
@@ -20,7 +21,7 @@ class MovementPolicy
      */
     public function view(User $user, InventoryMovement $inventoryMovement): bool
     {
-        return $user->can('movements.view');
+        return $user->can(PermissionEnum::MOVEMENTS_VIEW->value);
     }
 
     /**
@@ -28,7 +29,7 @@ class MovementPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('movements.create');
+        return $user->can(PermissionEnum::MOVEMENTS_CREATE->value);
     }
 
     /**
@@ -36,7 +37,7 @@ class MovementPolicy
      */
     public function update(User $user, InventoryMovement $inventoryMovement): bool
     {
-        return $user->can('movements.edit');
+        return $user->can(PermissionEnum::MOVEMENTS_EDIT->value);
     }
 
     /**
@@ -44,7 +45,7 @@ class MovementPolicy
      */
     public function delete(User $user, InventoryMovement $inventoryMovement): bool
     {
-        return $user->can('movements.delete');
+        return $user->can(PermissionEnum::MOVEMENTS_DELETE->value);
     }
 
     /**
@@ -52,7 +53,7 @@ class MovementPolicy
      */
     public function restore(User $user, InventoryMovement $inventoryMovement): bool
     {
-        return $user->can('movements.delete');
+        return $user->can(PermissionEnum::MOVEMENTS_DELETE->value);
     }
 
     /**
@@ -60,6 +61,6 @@ class MovementPolicy
      */
     public function forceDelete(User $user, InventoryMovement $inventoryMovement): bool
     {
-        return $user->can('movements.delete');
+        return $user->can(PermissionEnum::MOVEMENTS_DELETE->value);
     }
 }

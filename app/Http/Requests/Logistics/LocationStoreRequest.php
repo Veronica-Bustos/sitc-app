@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Logistics;
 
+use App\Models\Location;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LocationStoreRequest extends FormRequest
@@ -11,7 +12,7 @@ class LocationStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', Location::class);
     }
 
     /**

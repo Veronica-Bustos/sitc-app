@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Maintenance;
 
+use App\Models\MaintenanceRecord;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
@@ -11,7 +12,10 @@ class UpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $maintenanceRecord = $this->route('maintenance_record');
+
+        return $maintenanceRecord instanceof MaintenanceRecord
+            && $this->user()->can('update', $maintenanceRecord);
     }
 
     /**

@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Enums\PermissionEnum;
 use App\Models\Category;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JMac\Testing\Traits\AdditionalAssertions;
@@ -21,7 +21,12 @@ final class CategoryControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::factory()->create());
+        $this->actingAsUserWithPermissions([
+            PermissionEnum::CATEGORIES_VIEW,
+            PermissionEnum::CATEGORIES_CREATE,
+            PermissionEnum::CATEGORIES_EDIT,
+            PermissionEnum::CATEGORIES_DELETE,
+        ]);
     }
 
     #[Test]

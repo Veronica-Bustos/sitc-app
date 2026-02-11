@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Enums\PermissionEnum;
 use App\Models\Category;
 use App\Models\Item;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JMac\Testing\Traits\AdditionalAssertions;
@@ -22,7 +22,13 @@ final class ItemControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::factory()->create());
+        $this->actingAsUserWithPermissions([
+            PermissionEnum::ITEMS_VIEW,
+            PermissionEnum::ITEMS_CREATE,
+            PermissionEnum::ITEMS_EDIT,
+            PermissionEnum::ITEMS_DELETE,
+            PermissionEnum::ITEMS_HISTORY,
+        ]);
     }
 
     #[Test]

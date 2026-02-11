@@ -17,11 +17,13 @@
                     <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ $item->name }}</h1>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('items.history', $item) }}"
-                        class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors">
-                        <x-fas-history class="h-4 w-4 mr-2" />
-                        {{ __('History') }}
-                    </a>
+                    @can('history', $item)
+                        <a href="{{ route('items.history', $item) }}"
+                            class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors">
+                            <x-fas-history class="h-4 w-4 mr-2" />
+                            {{ __('History') }}
+                        </a>
+                    @endcan
                     @can('update', $item)
                         <a href="{{ route('items.edit', $item) }}"
                             class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors">
@@ -38,21 +40,27 @@
             class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 mb-6 border border-gray-200 dark:border-gray-700">
             <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">{{ __('Quick Actions') }}</h3>
             <div class="flex flex-wrap gap-2">
-                <a href="{{ route('inventory-movements.create', ['item' => $item->id]) }}"
-                    class="inline-flex items-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
-                    <x-fas-exchange-alt class="h-4 w-4 mr-2" />
-                    {{ __('Register Movement') }}
-                </a>
-                <a href="{{ route('maintenance-records.create', ['item' => $item->id]) }}"
-                    class="inline-flex items-center px-3 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm rounded-lg transition-colors">
-                    <x-fas-wrench class="h-4 w-4 mr-2" />
-                    {{ __('New Maintenance') }}
-                </a>
-                <a href="{{ route('attachments.create', ['item' => $item->id]) }}"
-                    class="inline-flex items-center px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition-colors">
-                    <x-fas-paperclip class="h-4 w-4 mr-2" />
-                    {{ __('Add Attachment') }}
-                </a>
+                @can('create', App\Models\InventoryMovement::class)
+                    <a href="{{ route('inventory-movements.create', ['item' => $item->id]) }}"
+                        class="inline-flex items-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
+                        <x-fas-exchange-alt class="h-4 w-4 mr-2" />
+                        {{ __('Register Movement') }}
+                    </a>
+                @endcan
+                @can('create', App\Models\MaintenanceRecord::class)
+                    <a href="{{ route('maintenance-records.create', ['item' => $item->id]) }}"
+                        class="inline-flex items-center px-3 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm rounded-lg transition-colors">
+                        <x-fas-wrench class="h-4 w-4 mr-2" />
+                        {{ __('New Maintenance') }}
+                    </a>
+                @endcan
+                @can('create', App\Models\Attachment::class)
+                    <a href="{{ route('attachments.create', ['item' => $item->id]) }}"
+                        class="inline-flex items-center px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition-colors">
+                        <x-fas-paperclip class="h-4 w-4 mr-2" />
+                        {{ __('Add Attachment') }}
+                    </a>
+                @endcan
             </div>
         </div>
 
@@ -76,14 +84,16 @@
                         class="py-4 px-6 border-b-2 font-medium text-sm transition-colors">
                         {{ __('Recent Movements') }}
                     </button>
-                    <button @click="activeTab = 'files'"
-                        :class="{
-                            'border-blue-500 text-blue-600 dark:text-blue-400': activeTab === 'files',
-                            'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300': activeTab !== 'files'
-                        }"
-                        class="py-4 px-6 border-b-2 font-medium text-sm transition-colors">
-                        {{ __('Attachments') }}
-                    </button>
+                    @can('viewAny', App\Models\Attachment::class)
+                        <button @click="activeTab = 'files'"
+                            :class="{
+                                'border-blue-500 text-blue-600 dark:text-blue-400': activeTab === 'files',
+                                'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300': activeTab !== 'files'
+                            }"
+                            class="py-4 px-6 border-b-2 font-medium text-sm transition-colors">
+                            {{ __('Attachments') }}
+                        </button>
+                    @endcan
                 </nav>
             </div>
 
@@ -224,10 +234,12 @@
                         @endforeach
                     </div>
                     <div class="mt-4 text-center">
-                        <a href="{{ route('items.history', $item) }}"
-                            class="text-blue-600 dark:text-blue-400 hover:underline">
-                            {{ __('View full history') }} →
-                        </a>
+                        @can('history', $item)
+                            <a href="{{ route('items.history', $item) }}"
+                                class="text-blue-600 dark:text-blue-400 hover:underline">
+                                {{ __('View full history') }} →
+                            </a>
+                        @endcan
                     </div>
                 @else
                     <p class="text-gray-500 dark:text-gray-400 text-center py-8">{{ __('No movements recorded') }}</p>
@@ -235,35 +247,37 @@
             </div>
 
             <!-- Tab Content: Attachments -->
-            <div x-show="activeTab === 'files'" x-transition class="p-6">
-                @if ($item->attachments->count() > 0)
-                    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
-                        @foreach ($item->attachments as $attachment)
-                            <div class="group relative">
-                                @if (str_starts_with($attachment->mime_type, 'image/'))
-                                    <img src="{{ Storage::url($attachment->file_path) }}"
-                                        alt="{{ $attachment->original_name }}"
-                                        class="w-full h-24 object-cover rounded-lg">
-                                @else
+            @can('viewAny', App\Models\Attachment::class)
+                <div x-show="activeTab === 'files'" x-transition class="p-6">
+                    @if ($item->attachments->count() > 0)
+                        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+                            @foreach ($item->attachments as $attachment)
+                                <div class="group relative">
+                                    @if (str_starts_with($attachment->mime_type, 'image/'))
+                                        <img src="{{ Storage::url($attachment->file_path) }}"
+                                            alt="{{ $attachment->original_name }}"
+                                            class="w-full h-24 object-cover rounded-lg">
+                                    @else
+                                        <div
+                                            class="w-full h-24 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                            <x-fas-file class="h-8 w-8 text-gray-400" />
+                                        </div>
+                                    @endif
                                     <div
-                                        class="w-full h-24 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                                        <x-fas-file class="h-8 w-8 text-gray-400" />
+                                        class="absolute inset-0 bg-black bg-opacity-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <a href="{{ Storage::url($attachment->file_path) }}" target="_blank"
+                                            class="text-white p-2 hover:text-blue-300">
+                                            <x-fas-eye class="h-5 w-5" />
+                                        </a>
                                     </div>
-                                @endif
-                                <div
-                                    class="absolute inset-0 bg-black bg-opacity-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank"
-                                        class="text-white p-2 hover:text-blue-300">
-                                        <x-fas-eye class="h-5 w-5" />
-                                    </a>
                                 </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @else
-                    <p class="text-gray-500 dark:text-gray-400 text-center py-8">{{ __('No attachments') }}</p>
-                @endif
-            </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-gray-500 dark:text-gray-400 text-center py-8">{{ __('No attachments found') }}</p>
+                    @endif
+                </div>
+            @endcan
         </div>
     </div>
 </x-layouts.app>

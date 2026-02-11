@@ -12,6 +12,11 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Category::class, 'category');
+    }
+
     public function index(Request $request, \App\Filters\CategoryFilter $filters): View
     {
         $query = Category::query();

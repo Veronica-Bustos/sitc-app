@@ -13,7 +13,7 @@ class AttachmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->can(PermissionEnum::ATTACHMENTS_VIEW->value);
     }
 
     /**
@@ -21,7 +21,7 @@ class AttachmentPolicy
      */
     public function view(User $user, Attachment $attachment): bool
     {
-        return true;
+        return $user->can(PermissionEnum::ATTACHMENTS_VIEW->value);
     }
 
     /**
@@ -69,6 +69,6 @@ class AttachmentPolicy
      */
     public function download(User $user, Attachment $attachment): bool
     {
-        return true;
+        return $user->can(PermissionEnum::ATTACHMENTS_VIEW->value);
     }
 }

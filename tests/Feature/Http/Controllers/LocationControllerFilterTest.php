@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Enums\PermissionEnum;
 use App\Models\Location;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -16,7 +16,7 @@ final class LocationControllerFilterTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::factory()->create());
+        $this->actingAsUserWithPermissions([PermissionEnum::LOCATIONS_VIEW]);
     }
 
     #[Test]

@@ -2,17 +2,18 @@
 
 namespace App\Policies;
 
+use App\Enums\PermissionEnum;
 use App\Models\MaintenanceRecord;
 use App\Models\User;
 
-class MaintenancePolicy
+class MaintenanceRecordPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('maintenance.view');
+        return $user->can(PermissionEnum::MAINTENANCE_VIEW->value);
     }
 
     /**
@@ -20,7 +21,7 @@ class MaintenancePolicy
      */
     public function view(User $user, MaintenanceRecord $maintenanceRecord): bool
     {
-        return $user->can('maintenance.view');
+        return $user->can(PermissionEnum::MAINTENANCE_VIEW->value);
     }
 
     /**
@@ -28,7 +29,7 @@ class MaintenancePolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('maintenance.create');
+        return $user->can(PermissionEnum::MAINTENANCE_CREATE->value);
     }
 
     /**
@@ -36,7 +37,7 @@ class MaintenancePolicy
      */
     public function update(User $user, MaintenanceRecord $maintenanceRecord): bool
     {
-        return $user->can('maintenance.edit');
+        return $user->can(PermissionEnum::MAINTENANCE_EDIT->value);
     }
 
     /**
@@ -44,7 +45,7 @@ class MaintenancePolicy
      */
     public function delete(User $user, MaintenanceRecord $maintenanceRecord): bool
     {
-        return $user->can('maintenance.delete');
+        return $user->can(PermissionEnum::MAINTENANCE_DELETE->value);
     }
 
     /**
@@ -52,7 +53,7 @@ class MaintenancePolicy
      */
     public function restore(User $user, MaintenanceRecord $maintenanceRecord): bool
     {
-        return $user->can('maintenance.delete');
+        return $user->can(PermissionEnum::MAINTENANCE_DELETE->value);
     }
 
     /**
@@ -60,6 +61,6 @@ class MaintenancePolicy
      */
     public function forceDelete(User $user, MaintenanceRecord $maintenanceRecord): bool
     {
-        return $user->can('maintenance.delete');
+        return $user->can(PermissionEnum::MAINTENANCE_DELETE->value);
     }
 }

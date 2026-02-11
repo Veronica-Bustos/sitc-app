@@ -16,11 +16,13 @@
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('inventory-movements.create', ['item' => $item->id]) }}"
-                        class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
-                        <x-fas-plus class="h-4 w-4 mr-2" />
-                        {{ __('New Movement') }}
-                    </a>
+                    @can('create', App\Models\InventoryMovement::class)
+                        <a href="{{ route('inventory-movements.create', ['item' => $item->id]) }}"
+                            class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+                            <x-fas-plus class="h-4 w-4 mr-2" />
+                            {{ __('New Movement') }}
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -161,11 +163,13 @@
                 <div class="text-center py-12">
                     <x-fas-history class="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
                     <p class="text-gray-500 dark:text-gray-400">{{ __('No movements recorded for this item') }}</p>
-                    <a href="{{ route('inventory-movements.create', ['item' => $item->id]) }}"
-                        class="inline-flex items-center mt-4 text-blue-600 dark:text-blue-400 hover:underline">
-                        <x-fas-plus class="h-4 w-4 mr-1" />
-                        {{ __('Register first movement') }}
-                    </a>
+                    @can('create', App\Models\InventoryMovement::class)
+                        <a href="{{ route('inventory-movements.create', ['item' => $item->id]) }}"
+                            class="inline-flex items-center mt-4 text-blue-600 dark:text-blue-400 hover:underline">
+                            <x-fas-plus class="h-4 w-4 mr-1" />
+                            {{ __('Register first movement') }}
+                        </a>
+                    @endcan
                 </div>
             @endif
         </div>

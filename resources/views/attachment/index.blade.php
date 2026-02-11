@@ -122,16 +122,20 @@
                             <!-- Actions -->
                             <div
                                 class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <a href="{{ route('attachments.show', $attachment) }}"
-                                    class="p-1.5 bg-white dark:bg-gray-800 rounded-full text-gray-600 dark:text-gray-300 hover:text-blue-600 shadow-sm"
-                                    title="{{ __('View') }}">
-                                    <x-fas-eye class="h-4 w-4" />
-                                </a>
-                                <a href="{{ route('attachments.download', $attachment) }}"
-                                    class="p-1.5 bg-white dark:bg-gray-800 rounded-full text-gray-600 dark:text-gray-300 hover:text-green-600 shadow-sm"
-                                    title="{{ __('Download') }}">
-                                    <x-fas-download class="h-4 w-4" />
-                                </a>
+                                @can('view', $attachment)
+                                    <a href="{{ route('attachments.show', $attachment) }}"
+                                        class="p-1.5 bg-white dark:bg-gray-800 rounded-full text-gray-600 dark:text-gray-300 hover:text-blue-600 shadow-sm"
+                                        title="{{ __('View') }}">
+                                        <x-fas-eye class="h-4 w-4" />
+                                    </a>
+                                @endcan
+                                @can('download', $attachment)
+                                    <a href="{{ route('attachments.download', $attachment) }}"
+                                        class="p-1.5 bg-white dark:bg-gray-800 rounded-full text-gray-600 dark:text-gray-300 hover:text-green-600 shadow-sm"
+                                        title="{{ __('Download') }}">
+                                        <x-fas-download class="h-4 w-4" />
+                                    </a>
+                                @endcan
                                 @can('delete', $attachment)
                                     <button
                                         @click="confirmDelete({{ json_encode(['id' => $attachment->id, 'original_name' => $attachment->original_name]) }})"
@@ -197,13 +201,15 @@
                             </p>
                         </div>
                         <div class="flex items-center gap-2">
-                            <template x-if="previewAttachment?.id">
-                                <a :href="`/attachments/${previewAttachment.id}/download`"
-                                    class="p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
-                                    title="{{ __('Download') }}">
-                                    <x-fas-download class="h-5 w-5" />
-                                </a>
-                            </template>
+                            @can(\App\Enums\PermissionEnum::ATTACHMENTS_VIEW->value)
+                                <template x-if="previewAttachment?.id">
+                                    <a :href="`/attachments/${previewAttachment.id}/download`"
+                                        class="p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                                        title="{{ __('Download') }}">
+                                        <x-fas-download class="h-5 w-5" />
+                                    </a>
+                                </template>
+                            @endcan
                             <button @click="previewModal = false"
                                 class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                                 <x-fas-times class="h-5 w-5" />

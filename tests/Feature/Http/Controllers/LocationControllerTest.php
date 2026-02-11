@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Enums\PermissionEnum;
 use App\Models\Location;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JMac\Testing\Traits\AdditionalAssertions;
@@ -21,7 +21,12 @@ final class LocationControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::factory()->create());
+        $this->actingAsUserWithPermissions([
+            PermissionEnum::LOCATIONS_VIEW,
+            PermissionEnum::LOCATIONS_CREATE,
+            PermissionEnum::LOCATIONS_EDIT,
+            PermissionEnum::LOCATIONS_DELETE,
+        ]);
     }
 
     #[Test]

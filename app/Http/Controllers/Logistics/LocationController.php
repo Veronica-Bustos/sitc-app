@@ -12,6 +12,11 @@ use Illuminate\View\View;
 
 class LocationController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Location::class, 'location');
+    }
+
     public function index(Request $request, \App\Filters\LocationFilter $filters): View
     {
         $query = Location::query();

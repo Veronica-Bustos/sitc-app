@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Enums\PermissionEnum;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -14,6 +16,8 @@ class ProfileController extends Controller
 {
     public function edit(Request $request): View
     {
+        Gate::authorize(PermissionEnum::SETTINGS_PROFILE->value);
+
         return view('settings.profile', [
             'user' => $request->user(),
         ]);
@@ -21,6 +25,8 @@ class ProfileController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
+        Gate::authorize(PermissionEnum::SETTINGS_PROFILE->value);
+
         $user = $request->user();
 
         $validated = $request->validate([
@@ -48,6 +54,8 @@ class ProfileController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
+        Gate::authorize(PermissionEnum::SETTINGS_PROFILE->value);
+
         $user = $request->user();
 
         Auth::logout();

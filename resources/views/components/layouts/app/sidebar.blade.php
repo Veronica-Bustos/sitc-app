@@ -6,66 +6,96 @@
         <nav class="flex-1 overflow-y-auto custom-scrollbar py-4">
             <ul class="space-y-1 px-2">
                 <!-- Dashboard -->
-                <x-layouts.sidebar-link href="{{ route('dashboard') }}" icon="fas-gauge" :active="request()->routeIs('dashboard')">
-                    {{ __('Dashboard') }}
-                </x-layouts.sidebar-link>
+                @can(\App\Enums\PermissionEnum::DASHBOARD_VIEW->value)
+                    <x-layouts.sidebar-link href="{{ route('dashboard') }}" icon="fas-gauge" :active="request()->routeIs('dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-layouts.sidebar-link>
+                @endcan
 
                 <!-- Inventario -->
-                <x-layouts.sidebar-two-level-link-parent :title="__('Inventory')" icon="fas-boxes-stacked" :active="request()->routeIs('items.*') || request()->routeIs('categories.*')">
-                    <x-layouts.sidebar-two-level-link href="{{ route('items.index') }}" icon='fas-box' :active="request()->routeIs('items.*')">
-                        {{ __('Items') }}
-                    </x-layouts.sidebar-two-level-link>
-                    <x-layouts.sidebar-two-level-link href="{{ route('categories.index') }}" icon='fas-tags'
-                        :active="request()->routeIs('categories.*')">
-                        {{ __('Categories') }}
-                    </x-layouts.sidebar-two-level-link>
-                </x-layouts.sidebar-two-level-link-parent>
+                @canany([\App\Enums\PermissionEnum::ITEMS_VIEW->value,
+                    \App\Enums\PermissionEnum::CATEGORIES_VIEW->value])
+                    <x-layouts.sidebar-two-level-link-parent :title="__('Inventory')" icon="fas-boxes-stacked" :active="request()->routeIs('items.*') || request()->routeIs('categories.*')">
+                        @can('viewAny', App\Models\Item::class)
+                            <x-layouts.sidebar-two-level-link href="{{ route('items.index') }}" icon='fas-box' :active="request()->routeIs('items.*')">
+                                {{ __('Items') }}
+                            </x-layouts.sidebar-two-level-link>
+                        @endcan
+                        @can('viewAny', App\Models\Category::class)
+                            <x-layouts.sidebar-two-level-link href="{{ route('categories.index') }}" icon='fas-tags'
+                                :active="request()->routeIs('categories.*')">
+                                {{ __('Categories') }}
+                            </x-layouts.sidebar-two-level-link>
+                        @endcan
+                    </x-layouts.sidebar-two-level-link-parent>
+                @endcanany
 
                 <!-- Logística -->
-                <x-layouts.sidebar-two-level-link-parent :title="__('Logistics')" icon="fas-truck" :active="request()->routeIs('locations.*') || request()->routeIs('inventory-movements.*')">
-                    <x-layouts.sidebar-two-level-link href="{{ route('locations.index') }}" icon='fas-location-dot'
-                        :active="request()->routeIs('locations.*')">
-                        {{ __('Locations') }}
-                    </x-layouts.sidebar-two-level-link>
-                    <x-layouts.sidebar-two-level-link href="{{ route('inventory-movements.index') }}"
-                        icon='fas-arrow-right-arrow-left' :active="request()->routeIs('inventory-movements.*')">
-                        {{ __('Movements') }}
-                    </x-layouts.sidebar-two-level-link>
-                </x-layouts.sidebar-two-level-link-parent>
+                @canany([\App\Enums\PermissionEnum::LOCATIONS_VIEW->value,
+                    \App\Enums\PermissionEnum::MOVEMENTS_VIEW->value])
+                    <x-layouts.sidebar-two-level-link-parent :title="__('Logistics')" icon="fas-truck" :active="request()->routeIs('locations.*') || request()->routeIs('inventory-movements.*')">
+                        @can('viewAny', App\Models\Location::class)
+                            <x-layouts.sidebar-two-level-link href="{{ route('locations.index') }}" icon='fas-location-dot'
+                                :active="request()->routeIs('locations.*')">
+                                {{ __('Locations') }}
+                            </x-layouts.sidebar-two-level-link>
+                        @endcan
+                        @can('viewAny', App\Models\InventoryMovement::class)
+                            <x-layouts.sidebar-two-level-link href="{{ route('inventory-movements.index') }}"
+                                icon='fas-arrow-right-arrow-left' :active="request()->routeIs('inventory-movements.*')">
+                                {{ __('Movements') }}
+                            </x-layouts.sidebar-two-level-link>
+                        @endcan
+                    </x-layouts.sidebar-two-level-link-parent>
+                @endcanany
 
                 <!-- Mantenimiento -->
-                <x-layouts.sidebar-link href="{{ route('maintenance-records.index') }}" icon="fas-wrench"
-                    :active="request()->routeIs('maintenance-records.*')">
-                    {{ __('Maintenance') }}
-                </x-layouts.sidebar-link>
+                @can('viewAny', App\Models\MaintenanceRecord::class)
+                    <x-layouts.sidebar-link href="{{ route('maintenance-records.index') }}" icon="fas-wrench"
+                        :active="request()->routeIs('maintenance-records.*')">
+                        {{ __('Maintenance') }}
+                    </x-layouts.sidebar-link>
+                @endcan
 
                 <!-- Medios -->
-                <x-layouts.sidebar-link href="{{ route('attachments.index') }}" icon="fas-paperclip"
-                    :active="request()->routeIs('attachments.*')">
-                    {{ __('Media') }}
-                </x-layouts.sidebar-link>
+                @can('viewAny', App\Models\Attachment::class)
+                    <x-layouts.sidebar-link href="{{ route('attachments.index') }}" icon="fas-paperclip"
+                        :active="request()->routeIs('attachments.*')">
+                        {{ __('Media') }}
+                    </x-layouts.sidebar-link>
+                @endcan
 
                 <!-- Configuración -->
-                <x-layouts.sidebar-two-level-link-parent :title="__('Settings')" icon="fas-gear" :active="request()->routeIs('settings.*')">
-                    <x-layouts.sidebar-two-level-link href="{{ route('settings.profile.edit') }}" icon='fas-user'
-                        :active="request()->routeIs('settings.profile.*')">
-                        {{ __('Profile') }}
-                    </x-layouts.sidebar-two-level-link>
-                    <x-layouts.sidebar-two-level-link href="{{ route('settings.password.edit') }}" icon='fas-lock'
-                        :active="request()->routeIs('settings.password.*')">
-                        {{ __('Password') }}
-                    </x-layouts.sidebar-two-level-link>
-                    <x-layouts.sidebar-two-level-link href="{{ route('settings.appearance.edit') }}" icon='fas-palette'
-                        :active="request()->routeIs('settings.appearance.*')">
-                        {{ __('Appearance') }}
-                    </x-layouts.sidebar-two-level-link>
-                    @can('manage', App\Models\User::class)
-                        <x-layouts.sidebar-two-level-link href="{{ route('settings.users.index') }}" icon='fas-users'
-                            :active="request()->routeIs('settings.users.*')">
-                            {{ __('Users') }}
-                        </x-layouts.sidebar-two-level-link>
-                    @endcan
-                </x-layouts.sidebar-two-level-link-parent>
+                @canany([\App\Enums\PermissionEnum::SETTINGS_PROFILE->value,
+                    \App\Enums\PermissionEnum::SETTINGS_PASSWORD->value,
+                    \App\Enums\PermissionEnum::SETTINGS_APPEARANCE->value, \App\Enums\PermissionEnum::USERS_MANAGE->value])
+                    <x-layouts.sidebar-two-level-link-parent :title="__('Settings')" icon="fas-gear" :active="request()->routeIs('settings.*')">
+                        @can(\App\Enums\PermissionEnum::SETTINGS_PROFILE->value)
+                            <x-layouts.sidebar-two-level-link href="{{ route('settings.profile.edit') }}" icon='fas-user'
+                                :active="request()->routeIs('settings.profile.*')">
+                                {{ __('Profile') }}
+                            </x-layouts.sidebar-two-level-link>
+                        @endcan
+                        @can(\App\Enums\PermissionEnum::SETTINGS_PASSWORD->value)
+                            <x-layouts.sidebar-two-level-link href="{{ route('settings.password.edit') }}" icon='fas-lock'
+                                :active="request()->routeIs('settings.password.*')">
+                                {{ __('Password') }}
+                            </x-layouts.sidebar-two-level-link>
+                        @endcan
+                        @can(\App\Enums\PermissionEnum::SETTINGS_APPEARANCE->value)
+                            <x-layouts.sidebar-two-level-link href="{{ route('settings.appearance.edit') }}" icon='fas-palette'
+                                :active="request()->routeIs('settings.appearance.*')">
+                                {{ __('Appearance') }}
+                            </x-layouts.sidebar-two-level-link>
+                        @endcan
+                        @can('manage', App\Models\User::class)
+                            <x-layouts.sidebar-two-level-link href="{{ route('settings.users.index') }}" icon='fas-users'
+                                :active="request()->routeIs('settings.users.*')">
+                                {{ __('Users') }}
+                            </x-layouts.sidebar-two-level-link>
+                        @endcan
+                    </x-layouts.sidebar-two-level-link-parent>
+                @endcanany
             </ul>
         </nav>
 

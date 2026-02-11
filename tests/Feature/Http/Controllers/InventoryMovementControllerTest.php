@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Enums\PermissionEnum;
 use App\Models\InventoryMovement;
 use App\Models\Item;
 use App\Models\User;
@@ -23,7 +24,12 @@ final class InventoryMovementControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::factory()->create());
+        $this->actingAsUserWithPermissions([
+            PermissionEnum::MOVEMENTS_VIEW,
+            PermissionEnum::MOVEMENTS_CREATE,
+            PermissionEnum::MOVEMENTS_EDIT,
+            PermissionEnum::MOVEMENTS_DELETE,
+        ]);
     }
 
     #[Test]
@@ -35,7 +41,7 @@ final class InventoryMovementControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('inventoryMovement.index');
-        $response->assertViewHas('inventoryMovements', fn ($paginator) => $paginator instanceof \Illuminate\Pagination\LengthAwarePaginator);
+        $response->assertViewHas('inventoryMovements', fn($paginator) => $paginator instanceof \Illuminate\Pagination\LengthAwarePaginator);
     }
 
     #[Test]

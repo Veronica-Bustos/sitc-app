@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Enums\PermissionEnum;
 use App\Models\Item;
 use App\Models\MaintenanceRecord;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
@@ -23,7 +23,12 @@ final class MaintenanceRecordControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::factory()->create());
+        $this->actingAsUserWithPermissions([
+            PermissionEnum::MAINTENANCE_VIEW,
+            PermissionEnum::MAINTENANCE_CREATE,
+            PermissionEnum::MAINTENANCE_EDIT,
+            PermissionEnum::MAINTENANCE_DELETE,
+        ]);
     }
 
     #[Test]
@@ -35,7 +40,7 @@ final class MaintenanceRecordControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('maintenanceRecord.index');
-        $response->assertViewHas('maintenanceRecords', fn ($paginator) => $paginator instanceof \Illuminate\Pagination\LengthAwarePaginator);
+        $response->assertViewHas('maintenanceRecords', fn($paginator) => $paginator instanceof \Illuminate\Pagination\LengthAwarePaginator);
     }
 
     #[Test]

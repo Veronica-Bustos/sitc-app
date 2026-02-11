@@ -19,6 +19,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttachmentController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Attachment::class, 'attachment');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -112,8 +117,8 @@ class AttachmentController extends Controller
 
         foreach ($files as $file) {
             // Generate unique filename
-            $fileName = uniqid('att_', true).'.'.$file->getClientOriginalExtension();
-            $filePath = 'attachments/'.date('Y/m');
+            $fileName = uniqid('att_', true) . '.' . $file->getClientOriginalExtension();
+            $filePath = 'attachments/' . date('Y/m');
 
             // Store file
             $storedPath = $file->storeAs($filePath, $fileName, 'local');
@@ -158,8 +163,6 @@ class AttachmentController extends Controller
      */
     public function edit(Request $request, Attachment $attachment): View
     {
-        $this->authorize('update', $attachment);
-
         $attachment->load(['attachable', 'uploader']);
 
         // Get related entities for the dropdown
@@ -203,8 +206,6 @@ class AttachmentController extends Controller
      */
     public function update(UpdateRequest $request, Attachment $attachment): RedirectResponse
     {
-        $this->authorize('update', $attachment);
-
         $validated = $request->validated();
 
         // Only update metadata, not the file itself
@@ -224,8 +225,6 @@ class AttachmentController extends Controller
      */
     public function destroy(Request $request, Attachment $attachment): RedirectResponse
     {
-        $this->authorize('delete', $attachment);
-
         // Delete the physical file
         if (Storage::disk('local')->exists($attachment->file_path)) {
             Storage::disk('local')->delete($attachment->file_path);
@@ -273,7 +272,7 @@ class AttachmentController extends Controller
             echo $file;
         }, 200, [
             'Content-Type' => $attachment->mime_type,
-            'Content-Disposition' => 'inline; filename="'.$attachment->original_name.'"',
+            'Content-Disposition' => 'inline; filename="' . $attachment->original_name . '"',
         ]);
     }
 }
