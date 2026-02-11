@@ -26,7 +26,9 @@ abstract class QueryFilter
         $this->builder = $builder;
 
         foreach ($this->request->all() as $name => $value) {
-            if (! $this->hasFilter($name)) {
+            $methodName = Str::camel($name);
+
+            if (! $this->hasFilter($methodName)) {
                 continue;
             }
 
@@ -34,7 +36,7 @@ abstract class QueryFilter
                 continue;
             }
 
-            call_user_func_array([$this, $name], [$value]);
+            call_user_func_array([$this, $methodName], [$value]);
         }
 
         if (! $this->request->has('sort') && $this->defaultSort) {
