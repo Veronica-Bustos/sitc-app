@@ -7,6 +7,7 @@ use App\Http\Controllers\Logistics\LocationController;
 use App\Http\Controllers\Logistics\MovementController;
 use App\Http\Controllers\Maintenance\MaintenanceController;
 use App\Http\Controllers\Media\AttachmentController;
+use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Settings;
 use App\Http\Controllers\Settings\UserManagementController;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +53,17 @@ Route::middleware(['auth'])->group(function () {
         ->name('attachments.download');
     Route::get('attachments/{attachment}/preview', [AttachmentController::class, 'preview'])
         ->name('attachments.preview');
+
+    // Reportes
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+        Route::get('/stock', [ReportController::class, 'stock'])->name('stock');
+        Route::get('/stock/export', [ReportController::class, 'stockExport'])->name('stock.export');
+        Route::get('/movements', [ReportController::class, 'movements'])->name('movements');
+        Route::get('/movements/export', [ReportController::class, 'movementsExport'])->name('movements.export');
+        Route::get('/out-of-service', [ReportController::class, 'outOfService'])->name('out-of-service');
+        Route::get('/out-of-service/export', [ReportController::class, 'outOfServiceExport'])->name('out-of-service.export');
+    });
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

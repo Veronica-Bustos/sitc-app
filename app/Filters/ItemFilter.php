@@ -34,6 +34,7 @@ class ItemFilter extends QueryFilter
 
     public function search($value)
     {
+        Log::debug('Attempting to search items with value: ' . $value);
         try {
             // Use keys() when available to get IDs efficiently
             $ids = Item::search($value)->keys();
@@ -48,8 +49,8 @@ class ItemFilter extends QueryFilter
 
             return $this->builder;
         } catch (\RuntimeException $e) {
-            Log::error('Search service is unavailable: '.$e->getMessage());
-            Log::debug('Falling back to database search for items with value: '.$value);
+            Log::error('Search service is unavailable: ' . $e->getMessage());
+            Log::debug('Falling back to database search for items with value: ' . $value);
             // Fallback for DB driver without fulltext support — use LIKE
             $this->builder->where(function ($q) use ($value) {
                 $q->where('items.code', 'like', "%{$value}%")

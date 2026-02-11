@@ -28,6 +28,11 @@ class DatabaseSeeder extends Seeder
                 \App\Models\Category::class,
                 \App\Models\Location::class,
                 \App\Models\Item::class,
+                \App\Models\InventoryMovement::class,
+                \App\Models\MaintenanceRecord::class,
+                \App\Models\Attachment::class,
+                \App\Models\User::class
+
             ] as $model
         ) {
             Artisan::call('scout:import', ['model' => $model]);

@@ -65,6 +65,32 @@
                     </x-layouts.sidebar-link>
                 @endcan
 
+                <!-- Reportes -->
+                @canany([\App\Enums\PermissionEnum::REPORTS_STOCK->value,
+                    \App\Enums\PermissionEnum::REPORTS_MOVEMENTS->value,
+                    \App\Enums\PermissionEnum::REPORTS_OUT_OF_SERVICE->value])
+                    <x-layouts.sidebar-two-level-link-parent :title="__('Reports')" icon="fas-chart-bar" :active="request()->routeIs('reports.*')">
+                        @can(\App\Enums\PermissionEnum::REPORTS_STOCK->value)
+                            <x-layouts.sidebar-two-level-link href="{{ route('reports.stock') }}" icon='fas-warehouse'
+                                :active="request()->routeIs('reports.stock')">
+                                {{ __('Stock by Location') }}
+                            </x-layouts.sidebar-two-level-link>
+                        @endcan
+                        @can(\App\Enums\PermissionEnum::REPORTS_MOVEMENTS->value)
+                            <x-layouts.sidebar-two-level-link href="{{ route('reports.movements') }}" icon='fas-exchange-alt'
+                                :active="request()->routeIs('reports.movements')">
+                                {{ __('Movement History') }}
+                            </x-layouts.sidebar-two-level-link>
+                        @endcan
+                        @can(\App\Enums\PermissionEnum::REPORTS_OUT_OF_SERVICE->value)
+                            <x-layouts.sidebar-two-level-link href="{{ route('reports.out-of-service') }}" icon='fas-tools'
+                                :active="request()->routeIs('reports.out-of-service')">
+                                {{ __('Out of Service') }}
+                            </x-layouts.sidebar-two-level-link>
+                        @endcan
+                    </x-layouts.sidebar-two-level-link-parent>
+                @endcanany
+
                 <!-- Configuración -->
                 @canany([\App\Enums\PermissionEnum::SETTINGS_PROFILE->value,
                     \App\Enums\PermissionEnum::SETTINGS_PASSWORD->value,
