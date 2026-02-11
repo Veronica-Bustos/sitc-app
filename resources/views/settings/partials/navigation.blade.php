@@ -31,6 +31,18 @@
                     {{ __('Appearance') }}
                 </a>
             </li>
+            @can('manage', App\Models\User::class)
+                <li>
+                    <a href="{{ route('settings.users.index') }}" @class([
+                        'bg-gray-100 dark:bg-gray-700 block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600' => !request()->routeIs(
+                            'settings.users.*'),
+                        'bg-white dark:bg-gray-600 block px-4 py-3  text-gray-900 dark:text-gray-100 font-medium' => request()->routeIs(
+                            'settings.users.*'),
+                    ])>
+                        {{ __('Users') }}
+                    </a>
+                </li>
+            @endcan
         </ul>
     </nav>
 </div>

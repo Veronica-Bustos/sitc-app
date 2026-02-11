@@ -25,39 +25,30 @@
     </div>
 
     <div class="p-6">
-        <div class="flex flex-col md:flex-row gap-6">
-            <!-- Sidebar Navigation -->
-            @include('settings.partials.navigation')
-
-            <!-- Profile Content -->
-            <div class="flex-1">
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
-                    <div class="p-6">
-                        <!-- Profile Form -->
-                        <form class="max-w-md mb-10" action="{{ route('settings.password.update') }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <div class="mb-4">
-                                <x-forms.input label="{{ __('Current Password') }}" name="current_password"
-                                    type="password" />
-                            </div>
-
-                            <div class="mb-6">
-                                <x-forms.input label="{{ __('New Password') }}" name="password" type="password" />
-                            </div>
-
-                            <div class="mb-6">
-                                <x-forms.input label="{{ __('Confirm Password') }}" name="password_confirmation"
-                                    type="password" />
-                            </div>
-
-                            <div>
-                                <x-button type="primary">{{ __('Update password') }}</x-button>
-                            </div>
-                        </form>
+        <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+            <div class="p-6">
+                <!-- Profile Form -->
+                <form class="max-w-md mb-10" action="{{ route('settings.password.update') }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-4">
+                        <x-forms.input label="{{ __('Current Password') }}" name="current_password" type="password" />
                     </div>
-                </div>
+
+                    <div class="mb-6">
+                        <x-forms.input label="{{ __('New Password') }}" name="password" type="password" />
+                    </div>
+
+                    <div class="mb-6">
+                        <x-forms.input label="{{ __('Confirm Password') }}" name="password_confirmation"
+                            type="password" />
+                    </div>
+
+                    <div>
+                        <x-button type="primary">{{ __('Update password') }}</x-button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

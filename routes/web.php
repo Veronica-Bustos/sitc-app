@@ -8,6 +8,7 @@ use App\Http\Controllers\Logistics\MovementController;
 use App\Http\Controllers\Maintenance\MaintenanceController;
 use App\Http\Controllers\Media\AttachmentController;
 use App\Http\Controllers\Settings;
+use App\Http\Controllers\Settings\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/language/{locale}', [LanguageController::class, 'switch'])
@@ -30,6 +31,16 @@ Route::middleware(['auth'])->group(function () {
     Route::put('settings/password', [Settings\PasswordController::class, 'update'])->name('settings.password.update');
     Route::get('settings/appearance', [Settings\AppearanceController::class, 'edit'])->name('settings.appearance.edit');
 
+    Route::get('settings/users', [UserManagementController::class, 'index'])
+        ->name('settings.users.index')
+        ->middleware('can:manage,App\\Models\\User');
+    Route::put('settings/users/{user}/role', [UserManagementController::class, 'updateUserRole'])
+        ->name('settings.users.role.update')
+        ->middleware('can:manage,App\\Models\\User');
+    Route::put('settings/roles/{role}/permissions', [UserManagementController::class, 'updateRolePermissions'])
+        ->name('settings.roles.permissions.update')
+        ->middleware('can:manage,App\\Models\\User');
+
     Route::resource('categories', CategoryController::class);
     Route::resource('locations', LocationController::class);
     Route::resource('items', ItemController::class);
@@ -43,4 +54,4 @@ Route::middleware(['auth'])->group(function () {
         ->name('attachments.preview');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

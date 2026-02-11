@@ -30,7 +30,7 @@ class RoleSeeder extends Seeder
             $permissions = $this->getPermissionsForRole($roleEnum);
             $role->syncPermissions($permissions);
 
-            $this->command->info("Role '{$roleEnum->value}' created with ".count($permissions).' permissions.');
+            $this->command->info("Role '{$roleEnum->value}' created with " . count($permissions) . ' permissions.');
         }
 
         $this->command->info('All roles and permissions configured successfully.');
@@ -89,14 +89,14 @@ class RoleSeeder extends Seeder
             PermissionEnum::LOCATIONS_EDIT->value,
 
             // Inventory Movements: full except delete
-            PermissionEnum::INVENTORY_MOVEMENTS_VIEW->value,
-            PermissionEnum::INVENTORY_MOVEMENTS_CREATE->value,
-            PermissionEnum::INVENTORY_MOVEMENTS_EDIT->value,
+            PermissionEnum::MOVEMENTS_VIEW->value,
+            PermissionEnum::MOVEMENTS_CREATE->value,
+            PermissionEnum::MOVEMENTS_EDIT->value,
 
             // Maintenance: view, create, edit
-            PermissionEnum::MAINTENANCE_RECORDS_VIEW->value,
-            PermissionEnum::MAINTENANCE_RECORDS_CREATE->value,
-            PermissionEnum::MAINTENANCE_RECORDS_EDIT->value,
+            PermissionEnum::MAINTENANCE_VIEW->value,
+            PermissionEnum::MAINTENANCE_CREATE->value,
+            PermissionEnum::MAINTENANCE_EDIT->value,
 
             // Attachments: full
             PermissionEnum::ATTACHMENTS_VIEW->value,
@@ -138,12 +138,12 @@ class RoleSeeder extends Seeder
             PermissionEnum::LOCATIONS_VIEW->value,
 
             // Inventory Movements: view and create
-            PermissionEnum::INVENTORY_MOVEMENTS_VIEW->value,
-            PermissionEnum::INVENTORY_MOVEMENTS_CREATE->value,
+            PermissionEnum::MOVEMENTS_VIEW->value,
+            PermissionEnum::MOVEMENTS_CREATE->value,
 
             // Maintenance: view and create
-            PermissionEnum::MAINTENANCE_RECORDS_VIEW->value,
-            PermissionEnum::MAINTENANCE_RECORDS_CREATE->value,
+            PermissionEnum::MAINTENANCE_VIEW->value,
+            PermissionEnum::MAINTENANCE_CREATE->value,
 
             // Attachments: view and create
             PermissionEnum::ATTACHMENTS_VIEW->value,
@@ -183,12 +183,12 @@ class RoleSeeder extends Seeder
             PermissionEnum::LOCATIONS_VIEW->value,
 
             // Inventory Movements: view only
-            PermissionEnum::INVENTORY_MOVEMENTS_VIEW->value,
+            PermissionEnum::MOVEMENTS_VIEW->value,
 
             // Maintenance: full except delete
-            PermissionEnum::MAINTENANCE_RECORDS_VIEW->value,
-            PermissionEnum::MAINTENANCE_RECORDS_CREATE->value,
-            PermissionEnum::MAINTENANCE_RECORDS_EDIT->value,
+            PermissionEnum::MAINTENANCE_VIEW->value,
+            PermissionEnum::MAINTENANCE_CREATE->value,
+            PermissionEnum::MAINTENANCE_EDIT->value,
 
             // Attachments: view and create
             PermissionEnum::ATTACHMENTS_VIEW->value,
@@ -228,10 +228,10 @@ class RoleSeeder extends Seeder
             PermissionEnum::LOCATIONS_VIEW->value,
 
             // Inventory Movements: view only
-            PermissionEnum::INVENTORY_MOVEMENTS_VIEW->value,
+            PermissionEnum::MOVEMENTS_VIEW->value,
 
             // Maintenance: view only
-            PermissionEnum::MAINTENANCE_RECORDS_VIEW->value,
+            PermissionEnum::MAINTENANCE_VIEW->value,
 
             // Attachments: view only
             PermissionEnum::ATTACHMENTS_VIEW->value,

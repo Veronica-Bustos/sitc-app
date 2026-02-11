@@ -14,12 +14,14 @@ class InventoryMovementFactory extends Factory
      */
     public function definition(): array
     {
+        $userId = User::query()->inRandomOrder()->value('id');
+
         return [
             'item_id' => Item::factory(),
             'from_location_id' => Location::factory(),
             'to_location_id' => Location::factory(),
             'movement_type' => fake()->randomElement(['ASSIGNMENT', 'RETURN', 'TRANSFER', 'DISPOSAL', 'RECEPTION']),
-            'user_id' => User::factory(),
+            'user_id' => $userId ?? User::factory(),
             'quantity' => fake()->numberBetween(1, 100),
             'notes' => fake()->optional()->sentence(),
             'reason' => fake()->optional()->word(),

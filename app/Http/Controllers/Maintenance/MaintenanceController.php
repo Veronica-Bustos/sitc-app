@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Maintenance;
 use App\Enums\MaintenancePriorityEnum;
 use App\Enums\MaintenanceStatusEnum;
 use App\Enums\MaintenanceTypeEnum;
+use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Maintenance\StoreRequest as MaintenanceStoreRequest;
 use App\Http\Requests\Maintenance\UpdateRequest as MaintenanceUpdateRequest;
@@ -28,7 +29,7 @@ class MaintenanceController extends Controller
 
         // Get users with TECNICO role for technician filter
         $technicians = User::whereHas('roles', function ($query) {
-            $query->where('name', 'TECNICO');
+            $query->where('name', RoleEnum::TECNICO->value);
         })->orWhereHas('permissions', function ($query) {
             $query->where('name', 'maintenance.edit');
         })->orderBy('name')->get();
@@ -51,7 +52,7 @@ class MaintenanceController extends Controller
 
         // Get users with TECNICO role
         $technicians = User::whereHas('roles', function ($query) {
-            $query->where('name', 'TECNICO');
+            $query->where('name', RoleEnum::TECNICO->value);
         })->orWhereHas('permissions', function ($query) {
             $query->where('name', 'maintenance.edit');
         })->orderBy('name')->get();
@@ -107,7 +108,7 @@ class MaintenanceController extends Controller
 
         // Get users with TECNICO role
         $technicians = User::whereHas('roles', function ($query) {
-            $query->where('name', 'TECNICO');
+            $query->where('name', RoleEnum::TECNICO->value);
         })->orWhereHas('permissions', function ($query) {
             $query->where('name', 'maintenance.edit');
         })->orderBy('name')->get();

@@ -16,7 +16,7 @@ class AdminUserSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'Camila Rojas',
+                'name' => 'Veronica Bustos',
                 'email' => 'admin@example.com',
                 'role' => RoleEnum::ADMIN->value,
             ],

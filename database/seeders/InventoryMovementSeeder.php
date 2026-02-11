@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\InventoryMovement;
 use App\Models\Item;
 use App\Models\Location;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class InventoryMovementSeeder extends Seeder
@@ -16,6 +17,7 @@ class InventoryMovementSeeder extends Seeder
     {
         $locations = Location::all();
         $items = Item::all();
+        $users = User::all();
 
         if ($locations->isEmpty()) {
             $this->call(LocationSeeder::class);
@@ -27,11 +29,17 @@ class InventoryMovementSeeder extends Seeder
             $items = Item::all();
         }
 
+        if ($users->isEmpty()) {
+            $this->call(AdminUserSeeder::class);
+            $users = User::all();
+        }
+
         for ($i = 0; $i < 5; $i++) {
             InventoryMovement::factory()->create([
                 'item_id' => $items->random()->id,
                 'from_location_id' => $locations->random()->id,
                 'to_location_id' => $locations->random()->id,
+                'user_id' => $users->random()->id,
             ]);
         }
 

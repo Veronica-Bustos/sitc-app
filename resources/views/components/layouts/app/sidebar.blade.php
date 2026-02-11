@@ -59,6 +59,12 @@
                         :active="request()->routeIs('settings.appearance.*')">
                         {{ __('Appearance') }}
                     </x-layouts.sidebar-two-level-link>
+                    @can('manage', App\Models\User::class)
+                        <x-layouts.sidebar-two-level-link href="{{ route('settings.users.index') }}" icon='fas-users'
+                            :active="request()->routeIs('settings.users.*')">
+                            {{ __('Users') }}
+                        </x-layouts.sidebar-two-level-link>
+                    @endcan
                 </x-layouts.sidebar-two-level-link-parent>
             </ul>
         </nav>

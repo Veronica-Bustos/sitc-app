@@ -7,52 +7,55 @@ enum PermissionEnum: string
     // Dashboard
     case DASHBOARD_VIEW = 'dashboard.view';
 
-    // Items (Inventario)
+        // Items (Inventario)
     case ITEMS_VIEW = 'items.view';
     case ITEMS_CREATE = 'items.create';
     case ITEMS_EDIT = 'items.edit';
     case ITEMS_DELETE = 'items.delete';
     case ITEMS_HISTORY = 'items.history';
 
-    // Categories (Categorías)
+        // Categories (Categorías)
     case CATEGORIES_VIEW = 'categories.view';
     case CATEGORIES_CREATE = 'categories.create';
     case CATEGORIES_EDIT = 'categories.edit';
     case CATEGORIES_DELETE = 'categories.delete';
 
-    // Locations (Ubicaciones)
+        // Locations (Ubicaciones)
     case LOCATIONS_VIEW = 'locations.view';
     case LOCATIONS_CREATE = 'locations.create';
     case LOCATIONS_EDIT = 'locations.edit';
     case LOCATIONS_DELETE = 'locations.delete';
 
-    // Inventory Movements (Movimientos)
-    case INVENTORY_MOVEMENTS_VIEW = 'inventory-movements.view';
-    case INVENTORY_MOVEMENTS_CREATE = 'inventory-movements.create';
-    case INVENTORY_MOVEMENTS_EDIT = 'inventory-movements.edit';
-    case INVENTORY_MOVEMENTS_DELETE = 'inventory-movements.delete';
+        // Inventory Movements (Movimientos)
+    case MOVEMENTS_VIEW = 'movements.view';
+    case MOVEMENTS_CREATE = 'movements.create';
+    case MOVEMENTS_EDIT = 'movements.edit';
+    case MOVEMENTS_DELETE = 'movements.delete';
 
-    // Maintenance Records (Mantenimiento)
-    case MAINTENANCE_RECORDS_VIEW = 'maintenance-records.view';
-    case MAINTENANCE_RECORDS_CREATE = 'maintenance-records.create';
-    case MAINTENANCE_RECORDS_EDIT = 'maintenance-records.edit';
-    case MAINTENANCE_RECORDS_DELETE = 'maintenance-records.delete';
+        // Maintenance Records (Mantenimiento)
+    case MAINTENANCE_VIEW = 'maintenance.view';
+    case MAINTENANCE_CREATE = 'maintenance.create';
+    case MAINTENANCE_EDIT = 'maintenance.edit';
+    case MAINTENANCE_DELETE = 'maintenance.delete';
 
-    // Attachments (Medios)
+        // Attachments (Medios)
     case ATTACHMENTS_VIEW = 'attachments.view';
     case ATTACHMENTS_CREATE = 'attachments.create';
     case ATTACHMENTS_EDIT = 'attachments.edit';
     case ATTACHMENTS_DELETE = 'attachments.delete';
 
-    // Reports (Reportes)
+        // Reports (Reportes)
     case REPORTS_STOCK = 'reports.stock';
     case REPORTS_MOVEMENTS = 'reports.movements';
     case REPORTS_OUT_OF_SERVICE = 'reports.out-of-service';
 
-    // Settings (Configuración)
+        // Settings (Configuración)
     case SETTINGS_PROFILE = 'settings.profile';
     case SETTINGS_PASSWORD = 'settings.password';
     case SETTINGS_APPEARANCE = 'settings.appearance';
+
+        // Users (Usuarios)
+    case USERS_MANAGE = 'users.manage';
 
     /**
      * Get all permissions as an array.
@@ -63,7 +66,7 @@ enum PermissionEnum: string
     {
         return array_reduce(
             self::cases(),
-            fn (array $carry, self $permission) => $carry + [$permission->value => $permission->label()],
+            fn(array $carry, self $permission) => $carry + [$permission->value => $permission->label()],
             []
         );
     }
@@ -97,16 +100,16 @@ enum PermissionEnum: string
             self::LOCATIONS_DELETE => 'Eliminar Ubicaciones',
 
             // Inventory Movements
-            self::INVENTORY_MOVEMENTS_VIEW => 'Ver Movimientos',
-            self::INVENTORY_MOVEMENTS_CREATE => 'Crear Movimientos',
-            self::INVENTORY_MOVEMENTS_EDIT => 'Editar Movimientos',
-            self::INVENTORY_MOVEMENTS_DELETE => 'Eliminar Movimientos',
+            self::MOVEMENTS_VIEW => 'Ver Movimientos',
+            self::MOVEMENTS_CREATE => 'Crear Movimientos',
+            self::MOVEMENTS_EDIT => 'Editar Movimientos',
+            self::MOVEMENTS_DELETE => 'Eliminar Movimientos',
 
             // Maintenance Records
-            self::MAINTENANCE_RECORDS_VIEW => 'Ver Mantenimientos',
-            self::MAINTENANCE_RECORDS_CREATE => 'Crear Mantenimientos',
-            self::MAINTENANCE_RECORDS_EDIT => 'Editar Mantenimientos',
-            self::MAINTENANCE_RECORDS_DELETE => 'Eliminar Mantenimientos',
+            self::MAINTENANCE_VIEW => 'Ver Mantenimientos',
+            self::MAINTENANCE_CREATE => 'Crear Mantenimientos',
+            self::MAINTENANCE_EDIT => 'Editar Mantenimientos',
+            self::MAINTENANCE_DELETE => 'Eliminar Mantenimientos',
 
             // Attachments
             self::ATTACHMENTS_VIEW => 'Ver Adjuntos',
@@ -123,6 +126,9 @@ enum PermissionEnum: string
             self::SETTINGS_PROFILE => 'Configurar Perfil',
             self::SETTINGS_PASSWORD => 'Cambiar Contraseña',
             self::SETTINGS_APPEARANCE => 'Configurar Apariencia',
+
+            // Users
+            self::USERS_MANAGE => 'Administrar Usuarios',
         };
     }
 
@@ -157,16 +163,16 @@ enum PermissionEnum: string
                 self::LOCATIONS_DELETE->value => self::LOCATIONS_DELETE->label(),
             ],
             'Movimientos' => [
-                self::INVENTORY_MOVEMENTS_VIEW->value => self::INVENTORY_MOVEMENTS_VIEW->label(),
-                self::INVENTORY_MOVEMENTS_CREATE->value => self::INVENTORY_MOVEMENTS_CREATE->label(),
-                self::INVENTORY_MOVEMENTS_EDIT->value => self::INVENTORY_MOVEMENTS_EDIT->label(),
-                self::INVENTORY_MOVEMENTS_DELETE->value => self::INVENTORY_MOVEMENTS_DELETE->label(),
+                self::MOVEMENTS_VIEW->value => self::MOVEMENTS_VIEW->label(),
+                self::MOVEMENTS_CREATE->value => self::MOVEMENTS_CREATE->label(),
+                self::MOVEMENTS_EDIT->value => self::MOVEMENTS_EDIT->label(),
+                self::MOVEMENTS_DELETE->value => self::MOVEMENTS_DELETE->label(),
             ],
             'Mantenimiento' => [
-                self::MAINTENANCE_RECORDS_VIEW->value => self::MAINTENANCE_RECORDS_VIEW->label(),
-                self::MAINTENANCE_RECORDS_CREATE->value => self::MAINTENANCE_RECORDS_CREATE->label(),
-                self::MAINTENANCE_RECORDS_EDIT->value => self::MAINTENANCE_RECORDS_EDIT->label(),
-                self::MAINTENANCE_RECORDS_DELETE->value => self::MAINTENANCE_RECORDS_DELETE->label(),
+                self::MAINTENANCE_VIEW->value => self::MAINTENANCE_VIEW->label(),
+                self::MAINTENANCE_CREATE->value => self::MAINTENANCE_CREATE->label(),
+                self::MAINTENANCE_EDIT->value => self::MAINTENANCE_EDIT->label(),
+                self::MAINTENANCE_DELETE->value => self::MAINTENANCE_DELETE->label(),
             ],
             'Adjuntos' => [
                 self::ATTACHMENTS_VIEW->value => self::ATTACHMENTS_VIEW->label(),
@@ -184,6 +190,9 @@ enum PermissionEnum: string
                 self::SETTINGS_PASSWORD->value => self::SETTINGS_PASSWORD->label(),
                 self::SETTINGS_APPEARANCE->value => self::SETTINGS_APPEARANCE->label(),
             ],
+            'Usuarios' => [
+                self::USERS_MANAGE->value => self::USERS_MANAGE->label(),
+            ],
         ];
     }
 
@@ -194,6 +203,6 @@ enum PermissionEnum: string
      */
     public static function values(): array
     {
-        return array_map(fn (self $permission) => $permission->value, self::cases());
+        return array_map(fn(self $permission) => $permission->value, self::cases());
     }
 }
