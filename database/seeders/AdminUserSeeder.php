@@ -14,15 +14,45 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@example.com'],
+        $users = [
             [
-                'name' => 'Administrador',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-            ]
-        );
+                'name' => 'Camila Rojas',
+                'email' => 'admin@example.com',
+                'role' => RoleEnum::ADMIN->value,
+            ],
+            [
+                'name' => 'Javier Mendez',
+                'email' => 'almacenista@sitc.test',
+                'role' => RoleEnum::ALMACENISTA->value,
+            ],
+            [
+                'name' => 'Paula Ortega',
+                'email' => 'jefeobra@sitc.test',
+                'role' => RoleEnum::JEFE_OBRA->value,
+            ],
+            [
+                'name' => 'Sergio Luna',
+                'email' => 'tecnico@sitc.test',
+                'role' => RoleEnum::TECNICO->value,
+            ],
+            [
+                'name' => 'Lucia Herrera',
+                'email' => 'auditor@sitc.test',
+                'role' => RoleEnum::AUDITOR->value,
+            ],
+        ];
 
-        $admin->assignRole(RoleEnum::ADMIN->value);
+        foreach ($users as $userData) {
+            $user = User::firstOrCreate(
+                ['email' => $userData['email']],
+                [
+                    'name' => $userData['name'],
+                    'password' => Hash::make('password'),
+                    'email_verified_at' => now(),
+                ]
+            );
+
+            $user->syncRoles([$userData['role']]);
+        }
     }
 }
